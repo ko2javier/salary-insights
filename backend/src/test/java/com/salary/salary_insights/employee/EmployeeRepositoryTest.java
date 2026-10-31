@@ -35,7 +35,7 @@ class EmployeeRepositoryTest {
     void savedEmployeeIsReadBackUnchanged() {
         // Given
         Country spain = countries.findById("ES").orElseThrow();
-        Employee ana = new Employee("Ana García", "ana.garcia@acme.com", JobTitle.HR_MANAGER,
+        Employee ana = new Employee("Ana Garcia", "ana.garcia@acme.com", JobTitle.HR_MANAGER,
                 spain, 45_000, LocalDate.of(2024, 1, 15));
 
         // When
@@ -44,7 +44,7 @@ class EmployeeRepositoryTest {
         Employee found = employees.findById(id).orElseThrow();
 
         // Then
-        assertThat(found.fullName()).isEqualTo("Ana García");
+        assertThat(found.fullName()).isEqualTo("Ana Garcia");
         assertThat(found.email()).isEqualTo("ana.garcia@acme.com");
         assertThat(found.jobTitle()).isEqualTo(JobTitle.HR_MANAGER);
         assertThat(found.department()).isEqualTo(Department.HUMAN_RESOURCES);
@@ -57,7 +57,7 @@ class EmployeeRepositoryTest {
     void employeeIsStoredWithReadableValues() {
         // Given
         Country spain = countries.findById("ES").orElseThrow();
-        Employee ana = new Employee("Ana García", "ana.garcia@acme.com", JobTitle.HR_MANAGER,
+        Employee ana = new Employee("Ana Garcia", "ana.garcia@acme.com", JobTitle.HR_MANAGER,
                 spain, 45_000, LocalDate.of(2024, 1, 15));
 
         // When

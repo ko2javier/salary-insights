@@ -39,7 +39,7 @@ class EmployeeApiTest {
         // Given
         String anaGarcia = """
                 {
-                  "fullName": "Ana García",
+                  "fullName": "Ana Garcia",
                   "email": "ana.garcia@acme.com",
                   "jobTitle": "HR Manager",
                   "countryCode": "ES",
@@ -55,7 +55,7 @@ class EmployeeApiTest {
         assertThat(response).hasStatus(HttpStatus.CREATED);
         assertThat(response).bodyJson().isLenientlyEqualTo("""
                 {
-                  "fullName": "Ana García",
+                  "fullName": "Ana Garcia",
                   "email": "ana.garcia@acme.com",
                   "jobTitle": "HR Manager",
                   "department": "Human Resources",
@@ -142,7 +142,7 @@ class EmployeeApiTest {
 
         // Then
         assertThat(response).hasStatus(HttpStatus.OK);
-        assertThat(response).bodyJson().extractingPath("$.fullName").isEqualTo("Ana García");
+        assertThat(response).bodyJson().extractingPath("$.fullName").isEqualTo("Ana Garcia");
     }
 
     @Test
@@ -211,7 +211,7 @@ class EmployeeApiTest {
         // Given
         post(json.writeValueAsString(anaGarcia()));
         Map<String, Object> luis = anaGarcia();
-        luis.put("fullName", "Luis Pérez");
+        luis.put("fullName", "Luis Perez");
         luis.put("email", "luis.perez@acme.com");
         String luisLocation = post(json.writeValueAsString(luis)).getResponse().getHeader("Location");
         luis.put("email", "Ana.Garcia@acme.com");
@@ -251,7 +251,7 @@ class EmployeeApiTest {
 
     private static Map<String, Object> anaGarcia() {
         Map<String, Object> employee = new LinkedHashMap<>();
-        employee.put("fullName", "Ana García");
+        employee.put("fullName", "Ana Garcia");
         employee.put("email", "ana.garcia@acme.com");
         employee.put("jobTitle", "HR Manager");
         employee.put("countryCode", "ES");
