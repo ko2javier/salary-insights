@@ -117,6 +117,21 @@ class EmployeeApiTest {
                 .isEqualTo("must be greater than 0");
     }
 
+    @Test
+    void emailAlreadyInUseIsRejectedWhateverItsCase() {
+        // Given
+        post(json.writeValueAsString(anaGarcia()));
+        Map<String, Object> sameEmailInCapitals = anaGarcia();
+        sameEmailInCapitals.put("email", "ANA.GARCIA@ACME.COM");
+
+        // When
+        MvcTestResult response = post(json.writeValueAsString(sameEmailInCapitals));
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.CONFLICT);
+        assertThat(response).bodyJson().extractingPath("$.errors.email").isNotNull();
+    }
+
     private static Map<String, Object> anaGarcia() {
         Map<String, Object> employee = new LinkedHashMap<>();
         employee.put("fullName", "Ana García");
