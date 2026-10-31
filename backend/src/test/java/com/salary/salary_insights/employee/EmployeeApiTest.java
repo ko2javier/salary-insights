@@ -97,6 +97,24 @@ class EmployeeApiTest {
         assertThat(response).bodyJson().extractingPath("$.errors." + field).isNotNull();
     }
 
+    @Test
+    void errorMessagesAreInEnglishEvenForABrowserInSpanish() {
+        // Given
+        Map<String, Object> employee = anaGarcia();
+        employee.put("annualSalary", 0);
+
+        // When
+        MvcTestResult response = mvc.post().uri("/api/employees")
+                .header("Accept-Language", "es-ES")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json.writeValueAsString(employee))
+                .exchange();
+
+        // Then
+        assertThat(response).bodyJson().extractingPath("$.errors.annualSalary")
+                .isEqualTo("must be greater than 0");
+    }
+
     private static Map<String, Object> anaGarcia() {
         Map<String, Object> employee = new LinkedHashMap<>();
         employee.put("fullName", "Ana García");
