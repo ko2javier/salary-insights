@@ -97,4 +97,22 @@ class EmployeeGeneratorTest {
                 .count();
         assertThat(inEngineering).isBetween(3_600L, 4_000L);
     }
+
+    @Test
+    void chineseEmployeesHaveNamesInTheLatinAlphabet() {
+        // Given
+        EmployeeGenerator generator = new EmployeeGenerator(new Random(SEED), COUNTRIES);
+
+        // When
+        List<Employee> employees = generator.generate(1_000);
+
+        // Then
+        List<String> chineseNames = employees.stream()
+                .filter(employee -> employee.country().code().equals("CN"))
+                .map(Employee::fullName)
+                .toList();
+        assertThat(chineseNames)
+                .isNotEmpty()
+                .allMatch(name -> name.matches("[A-Za-z ]+"));
+    }
 }
