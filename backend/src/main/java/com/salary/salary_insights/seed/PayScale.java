@@ -19,6 +19,8 @@ final class PayScale {
     }
 
     static double annualUsd(JobTitle title, String countryCode, double positionInBand) {
-        return BANDS_USD.get(title).min() * PAY_FACTORS.get(countryCode);
+        Band band = BANDS_USD.get(title);
+        double usReferenceSalary = band.min() + positionInBand * (band.max() - band.min());
+        return usReferenceSalary * PAY_FACTORS.get(countryCode);
     }
 }
