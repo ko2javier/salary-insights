@@ -26,7 +26,12 @@ final class PayScale {
 
     private static final Map<String, Double> PAY_FACTORS = Map.of(
             "US", 1.00,
-            "ES", 0.40);
+            "GB", 0.70,
+            "DE", 0.68,
+            "ES", 0.40,
+            "CN", 0.32,
+            "MX", 0.28,
+            "IN", 0.23);
 
     private PayScale() {
     }
