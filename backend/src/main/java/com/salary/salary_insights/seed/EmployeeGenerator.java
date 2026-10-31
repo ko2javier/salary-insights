@@ -6,6 +6,7 @@ import com.salary.salary_insights.employee.Employee;
 import com.salary.salary_insights.employee.JobTitle;
 import net.datafaker.Faker;
 
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,7 +104,7 @@ final class EmployeeGenerator {
         }
         Faker faker = fakers.computeIfAbsent(countryCode,
                 code -> new Faker(NAME_LOCALES.get(code), random));
-        return faker.name().firstName() + " " + faker.name().lastName();
+        return withoutAccents(faker.name().firstName() + " " + faker.name().lastName());
     }
 
     private String pick(List<String> names) {
@@ -113,5 +114,12 @@ final class EmployeeGenerator {
     private LocalDate hireDate() {
         long days = DATASET_DATE.toEpochDay() - FIRST_HIRE_DATE.toEpochDay();
         return FIRST_HIRE_DATE.plusDays(random.nextLong(days + 1));
+    }
+
+    // Plain letters only: Monica, not Mónica. NFD splits each letter from its accent; the
+    // German sharp s has no accent to split, so it becomes ss
+    private static String withoutAccents(String name) {
+        String decomposed = Normalizer.normalize(name.replace("ß", "ss"), Normalizer.Form.NFD);
+        return decomposed.replaceAll("\\p{M}", "");
     }
 }
