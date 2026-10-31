@@ -34,4 +34,18 @@ class EmployeeGeneratorTest {
         // Then
         assertThat(employees).hasSize(20);
     }
+
+    @Test
+    void sameSeedGeneratesTheSameEmployees() {
+        // Given
+        EmployeeGenerator firstGenerator = new EmployeeGenerator(new Random(SEED), COUNTRIES);
+        EmployeeGenerator secondGenerator = new EmployeeGenerator(new Random(SEED), COUNTRIES);
+
+        // When
+        List<Employee> firstRun = firstGenerator.generate(20);
+        List<Employee> secondRun = secondGenerator.generate(20);
+
+        // Then
+        assertThat(firstRun).usingRecursiveComparison().isEqualTo(secondRun);
+    }
 }
