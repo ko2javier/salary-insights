@@ -11,18 +11,28 @@ public class Country {
     @Id
     private String code;
 
+    private String name;
+
+    private String currency;
+
+    private double usdPerUnit;
+
     protected Country() {
     }
 
+    public String code() {
+        return code;
+    }
+
     public String name() {
-        return null;
+        return name;
     }
 
     public String currency() {
-        return null;
+        return currency;
     }
 
     public double usdPerUnit() {
-        return 0;
+        return usdPerUnit;
     }
 }
