@@ -25,6 +25,6 @@ public enum JobTitle {
                 return title;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Unknown job title: " + displayName);
     }
 }
