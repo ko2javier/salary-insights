@@ -1,6 +1,7 @@
 package com.salary.salary_insights.seed;
 
 import com.salary.salary_insights.country.Country;
+import com.salary.salary_insights.employee.Department;
 import com.salary.salary_insights.employee.Employee;
 import com.salary.salary_insights.employee.JobTitle;
 import net.datafaker.Faker;
@@ -12,6 +13,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static java.util.Map.entry;
 
 final class EmployeeGenerator {
 
@@ -24,20 +29,46 @@ final class EmployeeGenerator {
             "IN", Locale.forLanguageTag("en-IN"),
             "CN", Locale.forLanguageTag("zh-CN"));
 
+    // Weights from docs/decisions/0001-seed-data.md
+    private static final WeightedChoice<String> COUNTRY_WEIGHTS = WeightedChoice.of(
+            entry("US", 25), entry("IN", 20), entry("GB", 12), entry("DE", 12),
+            entry("ES", 12), entry("MX", 10), entry("CN", 9));
+
+    private static final WeightedChoice<Department> DEPARTMENT_WEIGHTS = WeightedChoice.of(
+            entry(Department.ENGINEERING, 38), entry(Department.SALES, 22),
+            entry(Department.OPERATIONS, 18), entry(Department.MARKETING, 9),
+            entry(Department.FINANCE, 8), entry(Department.HUMAN_RESOURCES, 5));
+
+    private static final Map<Department, WeightedChoice<JobTitle>> JOB_TITLE_WEIGHTS = Map.of(
+            Department.ENGINEERING, WeightedChoice.of(entry(JobTitle.SOFTWARE_ENGINEER, 62),
+                    entry(JobTitle.SENIOR_SOFTWARE_ENGINEER, 28), entry(JobTitle.ENGINEERING_MANAGER, 10)),
+            Department.SALES, WeightedChoice.of(entry(JobTitle.ACCOUNT_EXECUTIVE, 88),
+                    entry(JobTitle.SALES_MANAGER, 12)),
+            Department.OPERATIONS, WeightedChoice.of(entry(JobTitle.OPERATIONS_ANALYST, 88),
+                    entry(JobTitle.OPERATIONS_MANAGER, 12)),
+            Department.MARKETING, WeightedChoice.of(entry(JobTitle.MARKETING_SPECIALIST, 85),
+                    entry(JobTitle.MARKETING_MANAGER, 15)),
+            Department.FINANCE, WeightedChoice.of(entry(JobTitle.FINANCIAL_ANALYST, 85),
+                    entry(JobTitle.FINANCE_MANAGER, 15)),
+            Department.HUMAN_RESOURCES, WeightedChoice.of(entry(JobTitle.HR_SPECIALIST, 85),
+                    entry(JobTitle.HR_MANAGER, 15)));
+
     private final Random random;
-    private final List<Country> countries;
+    private final Map<String, Country> countriesByCode;
     private final Map<String, Faker> fakers = new HashMap<>();
 
     EmployeeGenerator(Random random, List<Country> countries) {
         this.random = random;
-        this.countries = countries;
+        this.countriesByCode = countries.stream()
+                .collect(Collectors.toMap(Country::code, Function.identity()));
     }
 
     List<Employee> generate(int count) {
         List<Employee> employees = new ArrayList<>(count);
         for (int number = 1; number <= count; number++) {
-            Country country = countries.get(random.nextInt(countries.size()));
-            JobTitle title = JobTitle.values()[random.nextInt(JobTitle.values().length)];
+            Country country = countriesByCode.get(COUNTRY_WEIGHTS.pick(random.nextDouble()));
+            Department department = DEPARTMENT_WEIGHTS.pick(random.nextDouble());
+            JobTitle title = JOB_TITLE_WEIGHTS.get(department).pick(random.nextDouble());
             double salaryUsd = PayScale.annualUsd(title, country.code(), random.nextDouble());
             employees.add(new Employee(
                     fullName(country.code()),

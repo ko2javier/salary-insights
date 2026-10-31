@@ -1,5 +1,7 @@
 package com.salary.salary_insights.seed;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.SequencedMap;
 
 /**
@@ -16,6 +18,15 @@ final class WeightedChoice<T> {
     WeightedChoice(SequencedMap<T, Integer> weights) {
         this.weights = weights;
         this.totalWeight = weights.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    @SafeVarargs
+    static <T> WeightedChoice<T> of(Map.Entry<T, Integer>... options) {
+        LinkedHashMap<T, Integer> weights = new LinkedHashMap<>();
+        for (var option : options) {
+            weights.put(option.getKey(), option.getValue());
+        }
+        return new WeightedChoice<>(weights);
     }
 
     /** @param roll a number in [0, 1), such as Random.nextDouble() */
