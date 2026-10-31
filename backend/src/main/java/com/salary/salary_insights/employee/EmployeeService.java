@@ -2,6 +2,7 @@ package com.salary.salary_insights.employee;
 
 import com.salary.salary_insights.api.FieldConflictException;
 import com.salary.salary_insights.api.InvalidFieldException;
+import com.salary.salary_insights.api.NotFoundException;
 import com.salary.salary_insights.country.Country;
 import com.salary.salary_insights.country.CountryRepository;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,8 @@ public class EmployeeService {
 
     @Transactional(readOnly = true)
     public EmployeeResponse find(int id) {
-        return EmployeeResponse.from(employees.findById(id).orElseThrow());
+        return EmployeeResponse.from(employees.findById(id)
+                .orElseThrow(() -> new NotFoundException("no employee with id " + id)));
     }
 
     private Country country(String code) {
