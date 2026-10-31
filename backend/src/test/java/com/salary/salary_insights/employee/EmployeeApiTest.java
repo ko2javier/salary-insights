@@ -224,6 +224,31 @@ class EmployeeApiTest {
         assertThat(response).bodyJson().extractingPath("$.errors.email").isNotNull();
     }
 
+    @Test
+    void deletedEmployeeIsGone() {
+        // Given
+        String location = post(json.writeValueAsString(anaGarcia())).getResponse().getHeader("Location");
+
+        // When
+        MvcTestResult response = mvc.delete().uri(location).exchange();
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.NO_CONTENT);
+        assertThat(mvc.get().uri(location).exchange()).hasStatus(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void deletingAnUnknownEmployeeIsNotFound() {
+        // Given
+        String idThatDoesNotExist = "/api/employees/999999";
+
+        // When
+        MvcTestResult response = mvc.delete().uri(idThatDoesNotExist).exchange();
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.NOT_FOUND);
+    }
+
     private static Map<String, Object> anaGarcia() {
         Map<String, Object> employee = new LinkedHashMap<>();
         employee.put("fullName", "Ana García");
