@@ -41,6 +41,9 @@ public class EmployeeService {
 
     public EmployeeResponse update(int id, EmployeeRequest request) {
         Employee employee = existing(id);
+        if (employees.existsByEmailIgnoreCaseAndIdNot(request.email(), id)) {
+            throw new FieldConflictException("email", "email already in use: " + request.email());
+        }
         employee.update(
                 request.fullName(),
                 request.email(),
