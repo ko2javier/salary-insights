@@ -132,6 +132,19 @@ class EmployeeApiTest {
         assertThat(response).bodyJson().extractingPath("$.errors.email").isNotNull();
     }
 
+    @Test
+    void employeeIsFoundById() {
+        // Given
+        String location = post(json.writeValueAsString(anaGarcia())).getResponse().getHeader("Location");
+
+        // When
+        MvcTestResult response = mvc.get().uri(location).exchange();
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.OK);
+        assertThat(response).bodyJson().extractingPath("$.fullName").isEqualTo("Ana García");
+    }
+
     private static Map<String, Object> anaGarcia() {
         Map<String, Object> employee = new LinkedHashMap<>();
         employee.put("fullName", "Ana García");
