@@ -6,5 +6,9 @@ public enum Department {
     OPERATIONS,
     MARKETING,
     FINANCE,
-    HUMAN_RESOURCES
+    HUMAN_RESOURCES;
+
+    public String displayName() {
+        return null;
+    }
 }
