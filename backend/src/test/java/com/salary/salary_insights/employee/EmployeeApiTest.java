@@ -206,6 +206,24 @@ class EmployeeApiTest {
         assertThat(response).bodyJson().extractingPath("$.errors.annualSalary").isNotNull();
     }
 
+    @Test
+    void updateTakingAnotherEmployeesEmailIsRejected() {
+        // Given
+        post(json.writeValueAsString(anaGarcia()));
+        Map<String, Object> luis = anaGarcia();
+        luis.put("fullName", "Luis Pérez");
+        luis.put("email", "luis.perez@acme.com");
+        String luisLocation = post(json.writeValueAsString(luis)).getResponse().getHeader("Location");
+        luis.put("email", "Ana.Garcia@acme.com");
+
+        // When
+        MvcTestResult response = put(luisLocation, json.writeValueAsString(luis));
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.CONFLICT);
+        assertThat(response).bodyJson().extractingPath("$.errors.email").isNotNull();
+    }
+
     private static Map<String, Object> anaGarcia() {
         Map<String, Object> employee = new LinkedHashMap<>();
         employee.put("fullName", "Ana García");
