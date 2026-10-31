@@ -17,4 +17,16 @@ class JobTitleTest {
         // Then
         assertThat(department).isEqualTo(Department.ENGINEERING);
     }
+
+    @Test
+    void jobTitleIsFoundByTheNameStoredInTheDatabase() {
+        // Given
+        String storedName = "Software Engineer";
+
+        // When
+        JobTitle title = JobTitle.fromDisplayName(storedName);
+
+        // Then
+        assertThat(title).isEqualTo(JobTitle.SOFTWARE_ENGINEER);
+    }
 }

@@ -12,4 +12,8 @@ public enum JobTitle {
     public Department department() {
         return department;
     }
+
+    public static JobTitle fromDisplayName(String displayName) {
+        return null;
+    }
 }
