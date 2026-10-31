@@ -52,7 +52,8 @@ final class PayScale {
         return usReferenceSalary * PAY_FACTORS.get(countryCode) * adjustment;
     }
 
+    // Rounded to the nearest 100 units so salaries look like real offers
     static long toLocalCurrency(double usd, double usdPerUnit) {
-        return 0;
+        return Math.round(usd / usdPerUnit / 100) * 100;
     }
 }
