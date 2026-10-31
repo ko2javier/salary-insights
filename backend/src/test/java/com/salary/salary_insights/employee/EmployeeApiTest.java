@@ -157,6 +157,55 @@ class EmployeeApiTest {
         assertThat(response).hasStatus(HttpStatus.NOT_FOUND);
     }
 
+    @Test
+    void promotedEmployeeMovesToTheDepartmentOfTheNewJobTitle() {
+        // Given
+        String location = post(json.writeValueAsString(anaGarcia())).getResponse().getHeader("Location");
+        Map<String, Object> promotion = anaGarcia();
+        promotion.put("jobTitle", "Finance Manager");
+        promotion.put("annualSalary", 52000);
+
+        // When
+        MvcTestResult response = put(location, json.writeValueAsString(promotion));
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.OK);
+        assertThat(response).bodyJson().isLenientlyEqualTo("""
+                {
+                  "jobTitle": "Finance Manager",
+                  "department": "Finance",
+                  "annualSalary": 52000
+                }
+                """);
+    }
+
+    @Test
+    void updatingAnUnknownEmployeeIsNotFound() {
+        // Given
+        String idThatDoesNotExist = "/api/employees/999999";
+
+        // When
+        MvcTestResult response = put(idThatDoesNotExist, json.writeValueAsString(anaGarcia()));
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void updateWithAnInvalidSalaryIsRejected() {
+        // Given
+        String location = post(json.writeValueAsString(anaGarcia())).getResponse().getHeader("Location");
+        Map<String, Object> salaryCut = anaGarcia();
+        salaryCut.put("annualSalary", -1);
+
+        // When
+        MvcTestResult response = put(location, json.writeValueAsString(salaryCut));
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.BAD_REQUEST);
+        assertThat(response).bodyJson().extractingPath("$.errors.annualSalary").isNotNull();
+    }
+
     private static Map<String, Object> anaGarcia() {
         Map<String, Object> employee = new LinkedHashMap<>();
         employee.put("fullName", "Ana García");
@@ -170,6 +219,13 @@ class EmployeeApiTest {
 
     private MvcTestResult post(String json) {
         return mvc.post().uri("/api/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                .exchange();
+    }
+
+    private MvcTestResult put(String uri, String json) {
+        return mvc.put().uri(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .exchange();
