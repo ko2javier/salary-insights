@@ -134,4 +134,16 @@ class EmployeeGeneratorTest {
         assertThat(hireDates.stream().map(LocalDate::getYear).distinct().toList())
                 .containsAll(IntStream.rangeClosed(2012, 2026).boxed().toList());
     }
+
+    @Test
+    void namesHaveNoAccents() {
+        // Given
+        EmployeeGenerator generator = new EmployeeGenerator(new Random(SEED), COUNTRIES);
+
+        // When
+        List<Employee> employees = generator.generate(10_000);
+
+        // Then
+        assertThat(employees).extracting(Employee::fullName).allMatch(name -> name.matches("\\p{ASCII}+"));
+    }
 }
