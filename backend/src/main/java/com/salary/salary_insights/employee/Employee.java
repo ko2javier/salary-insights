@@ -44,6 +44,16 @@ public class Employee {
 
     public Employee(String fullName, String email, JobTitle jobTitle,
                     Country country, long annualSalary, LocalDate hireDate) {
+        apply(fullName, email, jobTitle, country, annualSalary, hireDate);
+    }
+
+    public void update(String fullName, String email, JobTitle jobTitle,
+                       Country country, long annualSalary, LocalDate hireDate) {
+        apply(fullName, email, jobTitle, country, annualSalary, hireDate);
+    }
+
+    private void apply(String fullName, String email, JobTitle jobTitle,
+                       Country country, long annualSalary, LocalDate hireDate) {
         this.fullName = fullName;
         this.email = email;
         this.jobTitle = jobTitle;

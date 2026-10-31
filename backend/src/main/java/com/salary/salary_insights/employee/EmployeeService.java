@@ -36,8 +36,24 @@ public class EmployeeService {
 
     @Transactional(readOnly = true)
     public EmployeeResponse find(int id) {
-        return EmployeeResponse.from(employees.findById(id)
-                .orElseThrow(() -> new NotFoundException("no employee with id " + id)));
+        return EmployeeResponse.from(existing(id));
+    }
+
+    public EmployeeResponse update(int id, EmployeeRequest request) {
+        Employee employee = existing(id);
+        employee.update(
+                request.fullName(),
+                request.email(),
+                jobTitle(request.jobTitle()),
+                country(request.countryCode()),
+                request.annualSalary(),
+                request.hireDate());
+        return EmployeeResponse.from(employee);
+    }
+
+    private Employee existing(int id) {
+        return employees.findById(id)
+                .orElseThrow(() -> new NotFoundException("no employee with id " + id));
     }
 
     private Country country(String code) {
