@@ -40,7 +40,7 @@ class EmployeeController {
                       @RequestParam(defaultValue = "desc") String sort,
                       @RequestParam(defaultValue = "0") int page,
                       @RequestParam(defaultValue = "20") int size) {
-        return null;
+        return service.list(search, country, department, jobTitle, sort, page, size);
     }
 
     @GetMapping("/{id}")

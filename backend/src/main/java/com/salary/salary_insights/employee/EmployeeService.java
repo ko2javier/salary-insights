@@ -5,6 +5,10 @@ import com.salary.salary_insights.api.InvalidFieldException;
 import com.salary.salary_insights.api.NotFoundException;
 import com.salary.salary_insights.country.Country;
 import com.salary.salary_insights.country.CountryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +43,21 @@ public class EmployeeService {
         return EmployeeResponse.from(existing(id));
     }
 
+    // Sorting by the USD amount also gives the right order within one country, where the rate is the same for all
+    @Transactional(readOnly = true)
+    public EmployeePage list(String search, String country, String department, String jobTitle,
+                             String sort, int page, int size) {
+        Sort bySalaryInUsd = JpaSort.unsafe(Sort.Direction.fromString(sort), "e.annualSalary * c.usdPerUnit")
+                .and(Sort.by("id"));
+        Page<Employee> result = employees.search(
+                blankToNull(search), blankToNull(country), blankToNull(department),
+                jobTitle == null || jobTitle.isBlank() ? null : jobTitle(jobTitle),
+                PageRequest.of(Math.max(page, 0), Math.clamp(size, 1, 100), bySalaryInUsd));
+        return new EmployeePage(
+                result.map(EmployeeResponse::from).getContent(),
+                result.getNumber(), result.getSize(), result.getTotalElements(), result.getTotalPages());
+    }
+
     public EmployeeResponse update(int id, EmployeeRequest request) {
         Employee employee = existing(id);
         if (employees.existsByEmailIgnoreCaseAndIdNot(request.email(), id)) {
@@ -66,6 +85,10 @@ public class EmployeeService {
     private Country country(String code) {
         return countries.findById(code)
                 .orElseThrow(() -> new InvalidFieldException("countryCode", "unknown country: " + code));
+    }
+
+    private static String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value.strip();
     }
 
     private static JobTitle jobTitle(String displayName) {

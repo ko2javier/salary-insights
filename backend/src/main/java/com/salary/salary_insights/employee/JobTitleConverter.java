@@ -6,9 +6,10 @@ import jakarta.persistence.Converter;
 @Converter
 class JobTitleConverter implements AttributeConverter<JobTitle, String> {
 
+    // Null when the list is not filtered by job title
     @Override
     public String convertToDatabaseColumn(JobTitle jobTitle) {
-        return jobTitle.displayName();
+        return jobTitle == null ? null : jobTitle.displayName();
     }
 
     @Override
