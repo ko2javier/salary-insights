@@ -1,5 +1,6 @@
 package com.salary.salary_insights.employee;
 
+import com.salary.salary_insights.api.InvalidFieldException;
 import com.salary.salary_insights.country.Country;
 import com.salary.salary_insights.country.CountryRepository;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,26 @@ public class EmployeeService {
     }
 
     public EmployeeResponse create(EmployeeRequest request) {
-        Country country = countries.findById(request.countryCode()).orElseThrow();
         Employee employee = new Employee(
                 request.fullName(),
                 request.email(),
-                JobTitle.fromDisplayName(request.jobTitle()),
-                country,
+                jobTitle(request.jobTitle()),
+                country(request.countryCode()),
                 request.annualSalary(),
                 request.hireDate());
         return EmployeeResponse.from(employees.save(employee));
+    }
+
+    private Country country(String code) {
+        return countries.findById(code)
+                .orElseThrow(() -> new InvalidFieldException("countryCode", "unknown country: " + code));
+    }
+
+    private static JobTitle jobTitle(String displayName) {
+        try {
+            return JobTitle.fromDisplayName(displayName);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidFieldException("jobTitle", "unknown job title: " + displayName);
+        }
     }
 }
