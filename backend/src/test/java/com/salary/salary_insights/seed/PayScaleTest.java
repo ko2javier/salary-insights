@@ -69,4 +69,26 @@ class PayScaleTest {
         assertThat(atTheBottom).isCloseTo(bottom, within(0.01));
         assertThat(atTheTop).isCloseTo(top, within(0.01));
     }
+
+    // Sales has no department adjustment anywhere, so only the country factor shows
+    @ParameterizedTest(name = "an account executive in {0} starts at {1} USD")
+    @CsvSource({
+            "US, 60000",
+            "GB, 42000",
+            "DE, 40800",
+            "ES, 24000",
+            "CN, 19200",
+            "MX, 16800",
+            "IN, 13800"
+    })
+    void eachCountryPaysItsShareOfTheUsBand(String countryCode, int expectedUsd) {
+        // Given
+        JobTitle title = JobTitle.ACCOUNT_EXECUTIVE;
+
+        // When
+        double salary = PayScale.annualUsd(title, countryCode, BOTTOM_OF_THE_BAND);
+
+        // Then: 60,000 USD at the bottom of the band x the country's pay factor
+        assertThat(salary).isCloseTo(expectedUsd, within(0.01));
+    }
 }
