@@ -112,4 +112,30 @@ class PayScaleTest {
         // Then
         assertThat(salary).isCloseTo(expectedUsd, within(0.01));
     }
+
+    @Test
+    void spanishSalaryOf38000UsdIsPaidAs33900Euros() {
+        // Given
+        double salaryUsd = 38_000;
+        double usdPerEuro = 1.1199;
+
+        // When
+        long salaryEur = PayScale.toLocalCurrency(salaryUsd, usdPerEuro);
+
+        // Then: 38,000 / 1.1199 = 33,931.60, rounded to the nearest 100
+        assertThat(salaryEur).isEqualTo(33_900);
+    }
+
+    @Test
+    void indianSalaryOf28405UsdIsPaidAs2696800Rupees() {
+        // Given
+        double salaryUsd = 28_405;
+        double usdPerRupee = 0.010533;
+
+        // When
+        long salaryInr = PayScale.toLocalCurrency(salaryUsd, usdPerRupee);
+
+        // Then: 28,405 / 0.010533 = 2,696,762.56, rounded to the nearest 100
+        assertThat(salaryInr).isEqualTo(2_696_800);
+    }
 }

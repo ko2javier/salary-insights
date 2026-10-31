@@ -51,4 +51,8 @@ final class PayScale {
                 .getOrDefault(countryCode, 1.0);
         return usReferenceSalary * PAY_FACTORS.get(countryCode) * adjustment;
     }
+
+    static long toLocalCurrency(double usd, double usdPerUnit) {
+        return 0;
+    }
 }
