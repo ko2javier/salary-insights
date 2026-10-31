@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,17 @@ class EmployeeController {
     ResponseEntity<EmployeeResponse> create(@Valid @RequestBody EmployeeRequest request) {
         EmployeeResponse created = service.create(request);
         return ResponseEntity.created(URI.create("/api/employees/" + created.id())).body(created);
+    }
+
+    @GetMapping
+    EmployeePage list(@RequestParam(required = false) String search,
+                      @RequestParam(required = false) String country,
+                      @RequestParam(required = false) String department,
+                      @RequestParam(required = false) String jobTitle,
+                      @RequestParam(defaultValue = "desc") String sort,
+                      @RequestParam(defaultValue = "0") int page,
+                      @RequestParam(defaultValue = "20") int size) {
+        return null;
     }
 
     @GetMapping("/{id}")
