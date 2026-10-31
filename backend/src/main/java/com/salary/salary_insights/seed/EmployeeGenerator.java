@@ -26,8 +26,17 @@ final class EmployeeGenerator {
             "DE", Locale.forLanguageTag("de"),
             "ES", Locale.forLanguageTag("es"),
             "MX", Locale.forLanguageTag("es-MX"),
-            "IN", Locale.forLanguageTag("en-IN"),
-            "CN", Locale.forLanguageTag("zh-CN"));
+            "IN", Locale.forLanguageTag("en-IN"));
+
+    // DataFaker only has Chinese names in Chinese characters; these are the most common
+    // ones in pinyin, family name first as they are written in China
+    private static final List<String> CHINESE_FAMILY_NAMES = List.of(
+            "Wang", "Li", "Zhang", "Liu", "Chen", "Yang", "Huang", "Zhao", "Wu", "Zhou",
+            "Xu", "Sun", "Ma", "Zhu", "Hu", "Guo", "He", "Lin", "Luo", "Gao");
+
+    private static final List<String> CHINESE_GIVEN_NAMES = List.of(
+            "Wei", "Fang", "Na", "Min", "Jing", "Qiang", "Lei", "Jun", "Yan", "Jie",
+            "Tao", "Ming", "Chao", "Hui", "Xin", "Hao", "Yu", "Ping", "Lan", "Bo");
 
     // Weights from docs/decisions/0001-seed-data.md
     private static final WeightedChoice<String> COUNTRY_WEIGHTS = WeightedChoice.of(
@@ -84,8 +93,15 @@ final class EmployeeGenerator {
     // Every Faker shares the same Random, so one seed drives the whole run. They are
     // created on first use, in generation order, which is the same on every run.
     private String fullName(String countryCode) {
+        if (countryCode.equals("CN")) {
+            return pick(CHINESE_FAMILY_NAMES) + " " + pick(CHINESE_GIVEN_NAMES);
+        }
         Faker faker = fakers.computeIfAbsent(countryCode,
                 code -> new Faker(NAME_LOCALES.get(code), random));
         return faker.name().firstName() + " " + faker.name().lastName();
+    }
+
+    private String pick(List<String> names) {
+        return names.get(random.nextInt(names.size()));
     }
 }
