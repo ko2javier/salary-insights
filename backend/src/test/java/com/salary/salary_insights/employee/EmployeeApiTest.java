@@ -145,6 +145,21 @@ class EmployeeApiTest {
         assertThat(response).bodyJson().extractingPath("$.fullName").isEqualTo("Ana Garcia");
     }
 
+    // The seed writes names without accents, but the API keeps whatever the HR Manager types
+    @Test
+    void nameWithAccentsIsReadBackUnchanged() {
+        // Given
+        Map<String, Object> joseMuller = anaGarcia();
+        joseMuller.put("fullName", "José Müller");
+        String location = post(json.writeValueAsString(joseMuller)).getResponse().getHeader("Location");
+
+        // When
+        MvcTestResult response = mvc.get().uri(location).exchange();
+
+        // Then
+        assertThat(response).bodyJson().extractingPath("$.fullName").isEqualTo("José Müller");
+    }
+
     @Test
     void unknownEmployeeIsNotFound() {
         // Given
