@@ -35,4 +35,11 @@ class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         problem.setProperty("errors", Map.of(ex.field(), ex.getMessage()));
         return problem;
     }
+
+    @ExceptionHandler
+    ProblemDetail handleFieldConflict(FieldConflictException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problem.setProperty("errors", Map.of(ex.field(), ex.getMessage()));
+        return problem;
+    }
 }

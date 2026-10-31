@@ -1,5 +1,6 @@
 package com.salary.salary_insights.employee;
 
+import com.salary.salary_insights.api.FieldConflictException;
 import com.salary.salary_insights.api.InvalidFieldException;
 import com.salary.salary_insights.country.Country;
 import com.salary.salary_insights.country.CountryRepository;
@@ -19,6 +20,9 @@ public class EmployeeService {
     }
 
     public EmployeeResponse create(EmployeeRequest request) {
+        if (employees.existsByEmailIgnoreCase(request.email())) {
+            throw new FieldConflictException("email", "email already in use: " + request.email());
+        }
         Employee employee = new Employee(
                 request.fullName(),
                 request.email(),
