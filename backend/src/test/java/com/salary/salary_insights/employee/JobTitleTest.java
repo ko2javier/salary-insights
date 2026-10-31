@@ -3,6 +3,7 @@ package com.salary.salary_insights.employee;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 class JobTitleTest {
 
@@ -28,5 +29,19 @@ class JobTitleTest {
 
         // Then
         assertThat(title).isEqualTo(JobTitle.SOFTWARE_ENGINEER);
+    }
+
+    @Test
+    void unknownJobTitleIsRejected() {
+        // Given
+        String storedName = "Astronaut";
+
+        // When
+        Throwable thrown = catchThrowable(() -> JobTitle.fromDisplayName(storedName));
+
+        // Then
+        assertThat(thrown)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Unknown job title: Astronaut");
     }
 }
