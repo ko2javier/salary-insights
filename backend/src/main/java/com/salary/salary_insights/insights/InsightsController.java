@@ -12,21 +12,27 @@ import java.util.List;
 @RequestMapping("/api/insights")
 class InsightsController {
 
+    private final InsightsService service;
+
+    InsightsController(InsightsService service) {
+        this.service = service;
+    }
+
     // Q1 and Q4 per country; with a job title, Q5
     @GetMapping("/countries")
     List<LocalStats> byCountry(@RequestParam(required = false) String jobTitle) {
-        return null;
+        return service.byCountry(jobTitle);
     }
 
     // Q2
     @GetMapping("/countries/{code}/job-titles")
     List<LocalStats> byJobTitleIn(@PathVariable String code) {
-        return null;
+        return service.byJobTitleIn(code);
     }
 
     // Q3 and Q4 per department
     @GetMapping("/departments")
     List<UsdStats> byDepartment() {
-        return null;
+        return service.byDepartment();
     }
 }
