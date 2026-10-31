@@ -2,9 +2,14 @@ package com.salary.salary_insights.employee;
 
 import com.salary.salary_insights.country.Country;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
@@ -17,11 +22,36 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String fullName;
+
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private JobTitle jobTitle;
+
+    @Enumerated(EnumType.STRING)
+    private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "country_code")
+    private Country country;
+
+    private long annualSalary;
+
+    private LocalDate hireDate;
+
     protected Employee() {
     }
 
     public Employee(String fullName, String email, JobTitle jobTitle,
                     Country country, long annualSalary, LocalDate hireDate) {
+        this.fullName = fullName;
+        this.email = email;
+        this.jobTitle = jobTitle;
+        this.department = jobTitle.department();
+        this.country = country;
+        this.annualSalary = annualSalary;
+        this.hireDate = hireDate;
     }
 
     public Integer id() {
@@ -29,30 +59,30 @@ public class Employee {
     }
 
     public String fullName() {
-        return null;
+        return fullName;
     }
 
     public String email() {
-        return null;
+        return email;
     }
 
     public JobTitle jobTitle() {
-        return null;
+        return jobTitle;
     }
 
     public Department department() {
-        return null;
+        return department;
     }
 
     public Country country() {
-        return null;
+        return country;
     }
 
     public long annualSalary() {
-        return 0;
+        return annualSalary;
     }
 
     public LocalDate hireDate() {
-        return null;
+        return hireDate;
     }
 }
