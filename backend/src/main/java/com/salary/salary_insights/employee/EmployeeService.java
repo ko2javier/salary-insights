@@ -33,6 +33,11 @@ public class EmployeeService {
         return EmployeeResponse.from(employees.save(employee));
     }
 
+    @Transactional(readOnly = true)
+    public EmployeeResponse find(int id) {
+        return EmployeeResponse.from(employees.findById(id).orElseThrow());
+    }
+
     private Country country(String code) {
         return countries.findById(code)
                 .orElseThrow(() -> new InvalidFieldException("countryCode", "unknown country: " + code));
