@@ -62,3 +62,7 @@ Prompts verbatim, in Spanish as I wrote them, with an English translation below 
 > Escribe la fecha desde mi zona, léela con la JVM en UTC y confirma que Java recibe 2024-01-15. Déjalo como test.  Si pasa, el problema está cerrado del todo.??
 
 *Write the date from my time zone, read it with the JVM in UTC and confirm Java gets 2024-01-15. Leave it as a test. If it passes, is the problem fully closed?*
+
+> sguimos !! ya hice los commits ..
+
+*Let's continue, I've made the commits.*
