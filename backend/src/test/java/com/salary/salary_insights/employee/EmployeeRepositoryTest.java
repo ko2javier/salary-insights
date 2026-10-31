@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,6 +27,9 @@ class EmployeeRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private JdbcTemplate jdbc;
 
     @Test
     void savedEmployeeIsReadBackUnchanged() {
@@ -46,6 +51,25 @@ class EmployeeRepositoryTest {
         assertThat(found.country().code()).isEqualTo("ES");
         assertThat(found.annualSalary()).isEqualTo(45_000);
         assertThat(found.hireDate()).isEqualTo(LocalDate.of(2024, 1, 15));
+    }
+
+    @Test
+    void employeeIsStoredWithReadableValues() {
+        // Given
+        Country spain = countries.findById("ES").orElseThrow();
+        Employee ana = new Employee("Ana García", "ana.garcia@acme.com", JobTitle.HR_MANAGER,
+                spain, 45_000, LocalDate.of(2024, 1, 15));
+
+        // When
+        Integer id = employees.save(ana).id();
+        entityManager.flush();
+        Map<String, Object> row = jdbc.queryForMap(
+                "SELECT job_title, department, hire_date FROM employee WHERE id = ?", id);
+
+        // Then
+        assertThat(row.get("job_title")).isEqualTo("HR Manager");
+        assertThat(row.get("department")).isEqualTo("Human Resources");
+        assertThat(row.get("hire_date")).isEqualTo("2024-01-15");
     }
 
     private void readFromTheDatabaseNotFromMemory() {
