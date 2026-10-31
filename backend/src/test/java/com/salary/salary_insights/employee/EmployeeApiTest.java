@@ -145,6 +145,18 @@ class EmployeeApiTest {
         assertThat(response).bodyJson().extractingPath("$.fullName").isEqualTo("Ana García");
     }
 
+    @Test
+    void unknownEmployeeIsNotFound() {
+        // Given
+        int idThatDoesNotExist = 999_999;
+
+        // When
+        MvcTestResult response = mvc.get().uri("/api/employees/{id}", idThatDoesNotExist).exchange();
+
+        // Then
+        assertThat(response).hasStatus(HttpStatus.NOT_FOUND);
+    }
+
     private static Map<String, Object> anaGarcia() {
         Map<String, Object> employee = new LinkedHashMap<>();
         employee.put("fullName", "Ana García");
