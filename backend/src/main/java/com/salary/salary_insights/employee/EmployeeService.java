@@ -54,6 +54,10 @@ public class EmployeeService {
         return EmployeeResponse.from(employee);
     }
 
+    public void delete(int id) {
+        employees.delete(existing(id));
+    }
+
     private Employee existing(int id) {
         return employees.findById(id)
                 .orElseThrow(() -> new NotFoundException("no employee with id " + id));
