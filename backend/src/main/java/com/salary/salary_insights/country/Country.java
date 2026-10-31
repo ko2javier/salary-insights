@@ -20,6 +20,13 @@ public class Country {
     protected Country() {
     }
 
+    public Country(String code, String name, String currency, double usdPerUnit) {
+        this.code = code;
+        this.name = name;
+        this.currency = currency;
+        this.usdPerUnit = usdPerUnit;
+    }
+
     public String code() {
         return code;
     }
