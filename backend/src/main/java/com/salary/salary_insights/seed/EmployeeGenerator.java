@@ -62,6 +62,11 @@ final class EmployeeGenerator {
             Department.HUMAN_RESOURCES, WeightedChoice.of(entry(JobTitle.HR_SPECIALIST, 85),
                     entry(JobTitle.HR_MANAGER, 15)));
 
+    // The dataset is "as of" the date of the exchange rates (docs/decisions/0001-seed-data.md).
+    // A fixed date, not LocalDate.now(), keeps the seed reproducible and never in the future.
+    private static final LocalDate FIRST_HIRE_DATE = LocalDate.of(2012, 1, 1);
+    private static final LocalDate DATASET_DATE = LocalDate.of(2026, 10, 23);
+
     private final Random random;
     private final Map<String, Country> countriesByCode;
     private final Map<String, Faker> fakers = new HashMap<>();
@@ -85,7 +90,7 @@ final class EmployeeGenerator {
                     title,
                     country,
                     PayScale.toLocalCurrency(salaryUsd, country.usdPerUnit()),
-                    LocalDate.of(2020, 1, 1)));
+                    hireDate()));
         }
         return employees;
     }
@@ -103,5 +108,10 @@ final class EmployeeGenerator {
 
     private String pick(List<String> names) {
         return names.get(random.nextInt(names.size()));
+    }
+
+    private LocalDate hireDate() {
+        long days = DATASET_DATE.toEpochDay() - FIRST_HIRE_DATE.toEpochDay();
+        return FIRST_HIRE_DATE.plusDays(random.nextLong(days + 1));
     }
 }
