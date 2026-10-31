@@ -1,9 +1,8 @@
 package com.salary.salary_insights.employee;
 
 import com.salary.salary_insights.country.Country;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,11 +25,11 @@ public class Employee {
 
     private String email;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = JobTitleConverter.class)
     private JobTitle jobTitle;
 
-    @Enumerated(EnumType.STRING)
-    private Department department;
+    // Always derived from the job title; stored so that GROUP BY department reads it directly
+    private String department;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "country_code")
@@ -48,7 +47,7 @@ public class Employee {
         this.fullName = fullName;
         this.email = email;
         this.jobTitle = jobTitle;
-        this.department = jobTitle.department();
+        this.department = jobTitle.department().displayName();
         this.country = country;
         this.annualSalary = annualSalary;
         this.hireDate = hireDate;
@@ -71,7 +70,7 @@ public class Employee {
     }
 
     public Department department() {
-        return department;
+        return jobTitle.department();
     }
 
     public Country country() {
