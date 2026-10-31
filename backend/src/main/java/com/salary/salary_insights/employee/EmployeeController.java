@@ -1,5 +1,6 @@
 package com.salary.salary_insights.employee;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ class EmployeeController {
     }
 
     @PostMapping
-    ResponseEntity<EmployeeResponse> create(@RequestBody EmployeeRequest request) {
+    ResponseEntity<EmployeeResponse> create(@Valid @RequestBody EmployeeRequest request) {
         EmployeeResponse created = service.create(request);
         return ResponseEntity.created(URI.create("/api/employees/" + created.id())).body(created);
     }
