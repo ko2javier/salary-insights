@@ -1,14 +1,20 @@
 package com.salary.salary_insights.employee;
 
 public enum Department {
-    ENGINEERING,
-    SALES,
-    OPERATIONS,
-    MARKETING,
-    FINANCE,
-    HUMAN_RESOURCES;
+    ENGINEERING("Engineering"),
+    SALES("Sales"),
+    OPERATIONS("Operations"),
+    MARKETING("Marketing"),
+    FINANCE("Finance"),
+    HUMAN_RESOURCES("Human Resources");
+
+    private final String displayName;
+
+    Department(String displayName) {
+        this.displayName = displayName;
+    }
 
     public String displayName() {
-        return null;
+        return displayName;
     }
 }
