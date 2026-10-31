@@ -1,5 +1,6 @@
 package com.salary.salary_insights.seed;
 
+import com.salary.salary_insights.employee.Department;
 import com.salary.salary_insights.employee.JobTitle;
 
 import java.util.Map;
@@ -33,12 +34,21 @@ final class PayScale {
             "MX", 0.28,
             "IN", 0.23);
 
+    // Exceptions only: every other department and country pair is 1.0
+    private static final Map<Department, Map<String, Double>> DEPARTMENT_ADJUSTMENTS = Map.of(
+            Department.ENGINEERING, Map.of("IN", 1.30, "CN", 1.30, "MX", 1.15),
+            Department.FINANCE, Map.of("GB", 1.15),
+            Department.OPERATIONS, Map.of("IN", 0.85),
+            Department.HUMAN_RESOURCES, Map.of("IN", 0.85));
+
     private PayScale() {
     }
 
     static double annualUsd(JobTitle title, String countryCode, double positionInBand) {
         Band band = BANDS_USD.get(title);
         double usReferenceSalary = band.min() + positionInBand * (band.max() - band.min());
-        return usReferenceSalary * PAY_FACTORS.get(countryCode);
+        double adjustment = DEPARTMENT_ADJUSTMENTS.getOrDefault(title.department(), Map.of())
+                .getOrDefault(countryCode, 1.0);
+        return usReferenceSalary * PAY_FACTORS.get(countryCode) * adjustment;
     }
 }
