@@ -5,8 +5,10 @@ import com.salary.salary_insights.employee.Department;
 import com.salary.salary_insights.employee.Employee;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -114,5 +116,22 @@ class EmployeeGeneratorTest {
         assertThat(chineseNames)
                 .isNotEmpty()
                 .allMatch(name -> name.matches("[A-Za-z ]+"));
+    }
+
+    // The dataset is "as of" the date of the exchange rates, so no hire date is in the future
+    @Test
+    void hireDatesSpreadFrom2012UntilTheDateOfTheExchangeRates() {
+        // Given
+        EmployeeGenerator generator = new EmployeeGenerator(new Random(SEED), COUNTRIES);
+
+        // When
+        List<Employee> employees = generator.generate(1_000);
+
+        // Then
+        List<LocalDate> hireDates = employees.stream().map(Employee::hireDate).toList();
+        assertThat(hireDates).allMatch(date ->
+                !date.isBefore(LocalDate.of(2012, 1, 1)) && !date.isAfter(LocalDate.of(2026, 10, 23)));
+        assertThat(hireDates.stream().map(LocalDate::getYear).distinct().toList())
+                .containsAll(IntStream.rangeClosed(2012, 2026).boxed().toList());
     }
 }
