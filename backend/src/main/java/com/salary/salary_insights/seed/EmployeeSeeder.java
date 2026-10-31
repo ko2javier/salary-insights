@@ -32,6 +32,9 @@ class EmployeeSeeder implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        if (employeesToSeed == 0 || employees.count() > 0) {
+            return;
+        }
         long start = System.currentTimeMillis();
         EmployeeGenerator generator = new EmployeeGenerator(new Random(SEED), countries.findAll());
         employees.saveAll(generator.generate(employeesToSeed));
