@@ -49,6 +49,7 @@ Salaries are stored as **integers in whole currency units**: annual gross pay do
 - **Live exchange rates:** depends on an external service and makes figures change by themselves. Fixed rates are enough to compare.
 - **Median and percentiles:** more useful than the average for pay, but SQLite has no built-in function for them; they need window functions. First candidate for the next iteration.
 - **Excel import/export:** the seed covers the data load for this exercise. A real migration off Excel would need import first.
+- **Accent-insensitive name search:** SQLite's `lower()` only handles ASCII, so "jose" does not find "José". Improvement: a `search_name` column normalized in Java (NFD without marks, lower case with `Locale.ROOT`), computed on save and used by the search. Out of scope because the seed uses no accents and the impact on this exercise is minimal.
 
 ## Non-functional
 - **Performance:** list and summary endpoints answer in under 300 ms with 10,000 rows on the deployed server. Pagination, filtering and grouping run in the database, with indexes on the filtered columns (country, department, job title).
