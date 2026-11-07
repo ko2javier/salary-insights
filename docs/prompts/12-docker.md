@@ -30,3 +30,7 @@
 *8. `docs/deployment.md`: how to deploy on a VPS behind a reverse proxy with basic authentication, generically, without my domain or passwords.*
 
 *Then, in another commit: CI with GitHub Actions running the backend tests, the frontend tests and the Angular build on every push. No CD: it goes under "Possible improvements"."*
+
+> si has el push
+
+*"Yes, do the push."*
