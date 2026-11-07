@@ -1,0 +1,76 @@
+<section class="filters">
+  <form (submit)="onSearch($event, search.value)">
+    <input #search name="search" type="search" placeholder="Search by name" />
+    <button type="submit">Search</button>
+  </form>
+
+  <select name="country" (change)="onFilter('country', $event)">
+    <option value="">All countries</option>
+    @for (country of countries; track country.code) {
+      <option [value]="country.code">{{ country.name }}</option>
+    }
+  </select>
+
+  <select name="department" (change)="onFilter('department', $event)">
+    <option value="">All departments</option>
+    @for (department of departments; track department) {
+      <option [value]="department">{{ department }}</option>
+    }
+  </select>
+
+  <select name="jobTitle" (change)="onFilter('jobTitle', $event)">
+    <option value="">All job titles</option>
+    @for (jobTitle of jobTitles; track jobTitle) {
+      <option [value]="jobTitle">{{ jobTitle }}</option>
+    }
+  </select>
+
+  <select name="sort" (change)="onFilter('sort', $event)">
+    <option value="desc">Highest salary first</option>
+    <option value="asc">Lowest salary first</option>
+  </select>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Job title</th>
+      <th>Department</th>
+      <th>Country</th>
+      <th class="amount">Salary</th>
+      <th class="amount">Salary (USD)</th>
+      <th>Hired</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (employee of page()?.content; track employee.id) {
+      <tr>
+        <td>{{ employee.fullName }}</td>
+        <td>{{ employee.email }}</td>
+        <td>{{ employee.jobTitle }}</td>
+        <td>{{ employee.department }}</td>
+        <td>{{ employee.countryCode }}</td>
+        <td class="amount">
+          {{ employee.annualSalary | currency: employee.currency : 'symbol' : '1.0-0' }}
+        </td>
+        <td class="amount">{{ employee.annualSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+        <td>{{ employee.hireDate }}</td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="8">No employees match.</td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<nav class="pager">
+  <button name="previous" type="button" [disabled]="isFirstPage()" (click)="goToPage(-1)">
+    Previous
+  </button>
+  <span>Page {{ (page()?.page ?? 0) + 1 }} of {{ page()?.totalPages || 1 }}</span>
+  <span>({{ page()?.totalElements ?? 0 }} employees)</span>
+  <button name="next" type="button" [disabled]="isLastPage()" (click)="goToPage(1)">Next</button>
+</nav>
