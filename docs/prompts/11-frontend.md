@@ -43,3 +43,49 @@ Prompts verbatim, in Spanish as I wrote them, with an English translation below 
 > ¿Sigo con el paso 2, la lista Q6 con buscador, filtros, orden y paginación? R/ Si adelante
 
 *"[Quoting: 11 commits not pushed, prompts 10 and 11 not committed] A/ Go ahead with the commits and the push. [Quoting: shall I go on with step 2, the Q6 list with search, filters, sorting and pagination?] A/ Yes, go ahead."*
+
+> ¿Sigo con el paso 3: el formulario de alta y edición, con los errores 400 y 409 en cada campo, y el borrado con confirmación?
+>
+> R/ Si
+
+*"[Quoting: shall I go on with step 3, the create/edit form with 400 and 409 errors per field, and delete with confirmation?] A/ Yes."*
+
+> ¿Sigo con el paso 4, el panel de insights Q1–Q5 en tablas?
+> R/ Adelante
+
+*"[Quoting: shall I go on with step 4, the Q1–Q5 insights panel in tables?] A/ Go ahead."*
+
+> Queda el paso 5: estilos.. R/ pasemos a esto web . Te mando 2 capturas de diseño de stich google. Toma lo bueno desecha lo malo. Me gusta la idea de usar KPI.
+>
+> Una decisión que conviene que sepas: el backend no tiene ningún endpoint que devuelva la lista de países, departamentos y cargos. R/ Lo creamos en el back end. Es mejor que las cosas se obtengan del back.. un solo endpoint para ello
+>  {
+>     "countries":   [{ "code": "ES", "name": "Spain", "currency": "EUR" }, ...],
+>     "departments": ["Engineering", "Sales", ...],
+>     "jobTitles":   [{ "name": "Software Engineer", "department": "Engineering" }, ...]
+>   }
+>
+> 3- Quiero que la direccion base // environment.ts             → apiUrl: 'http://localhost:8080'. Se inluya en ese file no en proxy.conf.json
+>
+> *[Two screenshots of a Google Stitch design for the employee list: dark header, KPI cards, filter bar, table, numbered pagination]*
+
+*"[Quoting: step 5 is left: styles] A/ Let's move on to this web. I'm sending you 2 design screenshots from Google Stitch. Take the good, discard the bad. I like the idea of using KPIs.*
+
+*[Quoting: the backend has no endpoint returning the list of countries, departments and job titles] A/ We create it in the backend. It's better for things to come from the back... a single endpoint for it: [JSON above].*
+
+*3- I want the base address — environment.ts → apiUrl: 'http://localhost:8080' — to live in that file, not in proxy.conf.json."*
+
+> Seguimos modificando el front. No me gusta el aspecto de como se ve ahora el insights ?
+>
+> *[Two screenshots of a Google Stitch design for the insights page: KPI cards, numbered sections, totals rows, department chips, share-of-payroll bars]*
+
+*"We keep changing the front. I don't like how the insights page looks now?"*
+
+> para la seccion employees:
+> Una sola columna “Salary”: el USD arriba en negrita (es por lo que se ordena) y la cantidad local debajo, en pequeño y gris (CN¥665,500). Una columna, y la información completa.
+> ahora hay 2 columnas salary (USD) y anual salary.
+
+*"For the employees section: a single "Salary" column — USD on top in bold (it's what the list is sorted by) and the local amount underneath, small and grey (CN¥665,500). One column, and the full information. Right now there are 2 columns, salary (USD) and annual salary."*
+
+> Si pero en insights esta encima la moneda local. Tiene que tener el mismo formato . Encima USD, debajo local
+
+*"Yes, but in insights the local currency is on top. It has to have the same format: USD on top, local underneath."*
