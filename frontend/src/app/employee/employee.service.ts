@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Employee, EmployeeFilters, EmployeePage, EmployeeRequest } from './employee.model';
 
-const API = `${environment.apiUrl}/api/employees`;
+const API = `${environment.apiUrl}/employees`;
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {

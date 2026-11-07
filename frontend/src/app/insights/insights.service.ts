@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CompanySummary, LocalStats, UsdStats } from './insights.model';
 
-const API = `${environment.apiUrl}/api/insights`;
+const API = `${environment.apiUrl}/insights`;
 
 @Injectable({ providedIn: 'root' })
 export class InsightsService {

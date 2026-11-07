@@ -29,7 +29,7 @@ describe('CatalogService', () => {
 
     // When
     service.catalog().subscribe((catalog) => (result = catalog));
-    http.expectOne(`${API}/api/catalog`).flush(TEST_CATALOG);
+    http.expectOne(`${API}/catalog`).flush(TEST_CATALOG);
 
     // Then
     expect(result).toEqual(TEST_CATALOG);
@@ -38,7 +38,7 @@ describe('CatalogService', () => {
   it('asks the backend only once however many screens need it', () => {
     // Given
     service.catalog().subscribe();
-    http.expectOne(`${API}/api/catalog`).flush(TEST_CATALOG);
+    http.expectOne(`${API}/catalog`).flush(TEST_CATALOG);
     let second: Catalog | undefined;
 
     // When

@@ -51,7 +51,7 @@ describe('InsightsService', () => {
 
     // When
     service.byCountry().subscribe((stats) => (result = stats));
-    const request = http.expectOne((r) => r.url === `${API}/api/insights/countries`);
+    const request = http.expectOne((r) => r.url === `${API}/insights/countries`);
     request.flush([germany]);
 
     // Then
@@ -62,7 +62,7 @@ describe('InsightsService', () => {
   it('gets the figures per country for one job title', () => {
     // When
     service.byCountry('HR Manager').subscribe();
-    const request = http.expectOne((r) => r.url === `${API}/api/insights/countries`);
+    const request = http.expectOne((r) => r.url === `${API}/insights/countries`);
     request.flush([germany]);
 
     // Then
@@ -75,7 +75,7 @@ describe('InsightsService', () => {
 
     // When
     service.byJobTitleIn('DE').subscribe((stats) => (result = stats));
-    http.expectOne(`${API}/api/insights/countries/DE/job-titles`).flush([germany]);
+    http.expectOne(`${API}/insights/countries/DE/job-titles`).flush([germany]);
 
     // Then
     expect(result).toEqual([germany]);
@@ -87,7 +87,7 @@ describe('InsightsService', () => {
 
     // When
     service.byDepartment().subscribe((stats) => (result = stats));
-    http.expectOne(`${API}/api/insights/departments`).flush([engineering]);
+    http.expectOne(`${API}/insights/departments`).flush([engineering]);
 
     // Then
     expect(result).toEqual([engineering]);
@@ -100,7 +100,7 @@ describe('InsightsService', () => {
 
     // When
     service.summary().subscribe((s) => (result = s));
-    http.expectOne(`${API}/api/insights/summary`).flush(summary);
+    http.expectOne(`${API}/insights/summary`).flush(summary);
 
     // Then
     expect(result).toEqual(summary);

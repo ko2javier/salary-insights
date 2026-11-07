@@ -51,7 +51,7 @@ describe('EmployeeService', () => {
 
     // When
     service.list({ search: 'ana', country: 'DE', page: 2 }).subscribe((p) => (result = p));
-    const request = http.expectOne((r) => r.url === `${API}/api/employees`);
+    const request = http.expectOne((r) => r.url === `${API}/employees`);
     request.flush(page);
 
     // Then
@@ -66,7 +66,7 @@ describe('EmployeeService', () => {
   it('lists employees with no parameters when no filters are given', () => {
     // When
     service.list().subscribe();
-    const request = http.expectOne((r) => r.url === `${API}/api/employees`);
+    const request = http.expectOne((r) => r.url === `${API}/employees`);
     request.flush({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 });
 
     // Then
@@ -79,7 +79,7 @@ describe('EmployeeService', () => {
 
     // When
     service.find(7).subscribe((e) => (result = e));
-    const request = http.expectOne(`${API}/api/employees/7`);
+    const request = http.expectOne(`${API}/employees/7`);
     request.flush(ana);
 
     // Then
@@ -93,7 +93,7 @@ describe('EmployeeService', () => {
 
     // When
     service.create(anaRequest).subscribe((e) => (result = e));
-    const request = http.expectOne(`${API}/api/employees`);
+    const request = http.expectOne(`${API}/employees`);
     request.flush(ana, { status: 201, statusText: 'Created' });
 
     // Then
@@ -108,7 +108,7 @@ describe('EmployeeService', () => {
 
     // When
     service.update(7, anaRequest).subscribe((e) => (result = e));
-    const request = http.expectOne(`${API}/api/employees/7`);
+    const request = http.expectOne(`${API}/employees/7`);
     request.flush(ana);
 
     // Then
@@ -123,7 +123,7 @@ describe('EmployeeService', () => {
 
     // When
     service.delete(7).subscribe({ complete: () => (completed = true) });
-    const request = http.expectOne(`${API}/api/employees/7`);
+    const request = http.expectOne(`${API}/employees/7`);
     request.flush(null, { status: 204, statusText: 'No Content' });
 
     // Then

@@ -1,0 +1,31 @@
+# docker compose up --build  →  http://localhost:8095
+services:
+  backend:
+    build: ./backend
+    # No ports: only the frontend's nginx reaches it, on the internal network
+    environment:
+      DB_PATH: /data/salary.db
+      JAVA_TOOL_OPTIONS: -Xmx384m
+    volumes:
+      - salary-data:/data
+    mem_limit: 512m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      # The first start loads 10,000 employees before it answers
+      start_period: 60s
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-8095}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  salary-data:
