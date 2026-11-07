@@ -50,7 +50,13 @@ export class EmployeeList implements OnInit {
     return !page || page.page + 1 >= page.totalPages;
   }
 
-  protected delete(id: number) {}
+  // Stays on the same page, so the HR manager sees the list they were working on.
+  protected delete(id: number) {
+    this.service.delete(id).subscribe(() => {
+      this.confirmingId.set(undefined);
+      this.load();
+    });
+  }
 
   // Any new filter changes the result set, so it starts again from the first page.
   // An empty value ("All ...") removes the filter.
