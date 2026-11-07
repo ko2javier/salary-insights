@@ -89,3 +89,36 @@ Prompts verbatim, in Spanish as I wrote them, with an English translation below 
 > Si pero en insights esta encima la moneda local. Tiene que tener el mismo formato . Encima USD, debajo local
 
 *"Yes, but in insights the local currency is on top. It has to have the same format: USD on top, local underneath."*
+
+> varias cosas.
+> 1- en employees.. si haces hoover en next/previous no hay cambios. Esto lo mejoramos. Lo mismo con los botones de las pages. Lo mismo con los botones de insights/employee en el nav
+> 2- De la imagen toma el diseño de la papelera y el lapiz para las row de los employees. Que cdo se haga hoover se vea el cambio
+>
+> *[Screenshot of the Google Stitch employee list with pencil and trash icons in each row]*
+
+*"Several things. 1- In employees, hovering over next/previous shows no change. Let's improve that. Same with the page buttons. Same with the insights/employee buttons in the nav. 2- From the image, take the design of the trash can and the pencil for the employee rows. When hovered, the change should be visible."*
+
+> cambiamos un poco mas la page del employee , no me gusta como se muestran ahora las columnas.. toma este boceto de stich y aplicalo
+>
+> *[Screenshot of a Google Stitch sketch: employee rows with initials avatar, name over email, job title over department, country badge with name; clicking a row opens a side panel with the salary in USD and local currency, a bar comparing it with the lowest, average and highest pay for the same job title in that country, the details, and "Remove employee" / "Edit details" buttons]*
+
+*"Let's change the employee page a bit more, I don't like how the columns look now... take this Stitch sketch and apply it."*
+
+> El lápiz y la papelera siguen en cada fila, porque los pediste en el cambio anterior. Al pulsarlos no se abre el panel. R/ Esto es precisamente lo que ya no quiero ahora y preferia lo que te mostraba en el diseño anterior al hacer click en la fila se muestran datos de este employee y las opciones para modificar y borrar. El lapiz y la papelera no me convence.
+>
+> tienes una propuesta mejor o la ves bien ?
+
+*"[Quoting: the pencil and trash are still in each row because you asked for them in the previous change; clicking them doesn't open the panel] A/ That is exactly what I don't want now; I preferred what I showed you in the previous design: clicking the row shows this employee's data and the options to edit and delete. The pencil and trash don't convince me. Do you have a better proposal, or do you think it's fine?"*
+
+> que el hoover ( el color ) sea mas intenso al moverse por cada row ?
+> 2- como se puede mostrar /indicar , dar pistas que al hacer click las row dan info de cada employee ? dame propuestas?
+
+*"1- Can the hover (the colour) be stronger when moving over each row? 2- How can we show/indicate, give hints, that clicking a row gives info about each employee? Give me proposals."*
+
+> A sola es suficiente, siempre que vaya con lo que ya tienes: la fila entera cambia de fondo al pasar el ratón y el cursor se convierte en una mano. Esas tres señales juntas (flecha ›, fondo y cursor).. Adelante con esta opcion
+
+*"A on its own is enough, as long as it goes with what you already have: the whole row changes background on hover and the cursor turns into a hand. Those three signals together (› arrow, background and cursor)... Go ahead with this option."*
+
+> has los commits y los push
+
+*"Do the commits and the push."*
