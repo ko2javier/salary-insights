@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { provideTestCatalog } from '../catalog/catalog.testing';
+import { InsightsService } from '../insights/insights.service';
 import { EmployeeList } from './employee-list';
 import { Employee, EmployeePage } from './employee.model';
 import { EmployeeService } from './employee.service';
@@ -20,6 +21,8 @@ const ana: Employee = {
   annualSalaryUsd: 50396,
   hireDate: '2021-03-15',
 };
+
+const summary = { headcount: 10001, countries: 7, averageSalaryUsd: 60263, totalPayrollUsd: 602688723 };
 
 function pageOf(content: Employee[], page = 0, totalPages = 1): EmployeePage {
   return { content, page, size: 20, totalElements: content.length, totalPages };
@@ -54,6 +57,7 @@ describe('EmployeeList', () => {
         provideRouter([]),
         provideTestCatalog(),
         { provide: EmployeeService, useValue: { list, delete: remove } },
+        { provide: InsightsService, useValue: { summary: () => of(summary) } },
       ],
     });
     fixture = TestBed.createComponent(EmployeeList);
@@ -194,5 +198,58 @@ describe('EmployeeList', () => {
     // Then
     expect(remove).not.toHaveBeenCalled();
     expect(element('button[name=delete]')).not.toBeNull();
+  });
+
+  it('shows the company KPIs above the list', async () => {
+    // Given / When
+    await render(pageOf([ana]));
+
+    // Then
+    expect(element('[data-kpi=headcount]').textContent).toContain('10,001');
+    expect(element('[data-kpi=countries]').textContent).toContain('7');
+    expect(element('[data-kpi=average]').textContent).toContain('$60,263');
+    expect(element('[data-kpi=payroll]').textContent).toContain('$602.7M');
+  });
+
+  it('resets the search and every filter at once', async () => {
+    // Given
+    await render(pageOf([ana]));
+    element<HTMLInputElement>('input[name=search]').value = 'ana';
+    element<HTMLFormElement>('form').dispatchEvent(new Event('submit'));
+    choose('select[name=country]', 'DE');
+    choose('select[name=sort]', 'asc');
+
+    // When
+    element<HTMLButtonElement>('button[name=reset]').click();
+    fixture.detectChanges();
+
+    // Then
+    expect(lastFilters()).toEqual({ sort: 'desc', page: 0 });
+    expect(element<HTMLInputElement>('input[name=search]').value).toBe('');
+    expect(element<HTMLSelectElement>('select[name=country]').value).toBe('');
+    expect(element<HTMLSelectElement>('select[name=sort]').value).toBe('desc');
+  });
+
+  it('jumps straight to the last page', async () => {
+    // Given
+    await render(pageOf([ana], 0, 501));
+
+    // When
+    element<HTMLButtonElement>('button[data-page="501"]')?.click();
+    fixture.detectChanges();
+
+    // Then
+    expect(lastFilters()).toEqual({ sort: 'desc', page: 500 });
+  });
+
+  it('numbers the first, last and nearby pages and leaves a gap for the rest', async () => {
+    // Given / When
+    await render(pageOf([ana], 9, 501));
+
+    // Then
+    const labels = [...fixture.nativeElement.querySelectorAll('.pages > *')].map((e: HTMLElement) =>
+      e.textContent?.trim(),
+    );
+    expect(labels).toEqual(['1', '…', '9', '10', '11', '…', '501']);
   });
 });

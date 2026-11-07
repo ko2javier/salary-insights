@@ -24,3 +24,11 @@ export interface UsdStats {
   averageSalaryUsd: number;
   totalPayrollUsd: number;
 }
+
+// The whole company: the KPIs above the employee list.
+export interface CompanySummary {
+  headcount: number;
+  countries: number;
+  averageSalaryUsd: number;
+  totalPayrollUsd: number;
+}

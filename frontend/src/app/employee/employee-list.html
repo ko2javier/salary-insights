@@ -1,91 +1,149 @@
-<div class="toolbar">
-  <a routerLink="/employees/new">New employee</a>
-</div>
-
-<section class="filters">
-  <form (submit)="onSearch($event, search.value)">
-    <input #search name="search" type="search" placeholder="Search by name" />
-    <button type="submit">Search</button>
-  </form>
-
-  <select name="country" (change)="onFilter('country', $event)">
-    <option value="">All countries</option>
-    @for (country of catalog()?.countries; track country.code) {
-      <option [value]="country.code">{{ country.name }}</option>
-    }
-  </select>
-
-  <select name="department" (change)="onFilter('department', $event)">
-    <option value="">All departments</option>
-    @for (department of catalog()?.departments; track department) {
-      <option [value]="department">{{ department }}</option>
-    }
-  </select>
-
-  <select name="jobTitle" (change)="onFilter('jobTitle', $event)">
-    <option value="">All job titles</option>
-    @for (jobTitle of catalog()?.jobTitles; track jobTitle.name) {
-      <option [value]="jobTitle.name">{{ jobTitle.name }}</option>
-    }
-  </select>
-
-  <select name="sort" (change)="onFilter('sort', $event)">
-    <option value="desc">Highest salary first</option>
-    <option value="asc">Lowest salary first</option>
-  </select>
+<section class="kpis">
+  <article class="card kpi">
+    <h3>Workforce</h3>
+    <p class="value" data-kpi="headcount">{{ summary()?.headcount | number }}</p>
+    <p class="hint">employees on the payroll</p>
+  </article>
+  <article class="card kpi">
+    <h3>Countries</h3>
+    <p class="value" data-kpi="countries">{{ summary()?.countries }}</p>
+    <p class="hint">each paid in its own currency</p>
+  </article>
+  <article class="card kpi">
+    <h3>Average salary</h3>
+    <p class="value" data-kpi="average">
+      {{ summary()?.averageSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}
+    </p>
+    <p class="hint">per year, in USD</p>
+  </article>
+  <article class="card kpi">
+    <h3>Annual payroll</h3>
+    <p class="value" data-kpi="payroll">{{ compactUsd(summary()?.totalPayrollUsd) }}</p>
+    <p class="hint">all countries, in USD</p>
+  </article>
 </section>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Job title</th>
-      <th>Department</th>
-      <th>Country</th>
-      <th class="amount">Salary</th>
-      <th class="amount">Salary (USD)</th>
-      <th>Hired</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (employee of page()?.content; track employee.id) {
-      <tr>
-        <td>{{ employee.fullName }}</td>
-        <td>{{ employee.email }}</td>
-        <td>{{ employee.jobTitle }}</td>
-        <td>{{ employee.department }}</td>
-        <td>{{ employee.countryCode }}</td>
-        <td class="amount">
-          {{ employee.annualSalary | currency: employee.currency : 'symbol' : '1.0-0' }}
-        </td>
-        <td class="amount">{{ employee.annualSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
-        <td>{{ employee.hireDate }}</td>
-        <td class="row-actions">
-          @if (confirmingId() === employee.id) {
-            Delete?
-            <button name="confirm-delete" type="button" (click)="delete(employee.id)">Yes</button>
-            <button name="cancel-delete" type="button" (click)="confirmingId.set(undefined)">No</button>
-          } @else {
-            <a [routerLink]="['/employees', employee.id, 'edit']">Edit</a>
-            <button name="delete" type="button" (click)="confirmingId.set(employee.id)">Delete</button>
-          }
-        </td>
-      </tr>
-    } @empty {
-      <tr>
-        <td colspan="9">No employees match.</td>
-      </tr>
-    }
-  </tbody>
-</table>
+<section class="card">
+  <div class="filters">
+    <form class="search" (submit)="onSearch($event, search.value)">
+      <input #search name="search" type="search" placeholder="Search by name" [value]="filters().search ?? ''" />
+    </form>
 
-<nav class="pager">
-  <button name="previous" type="button" [disabled]="isFirstPage()" (click)="goToPage(-1)">
-    Previous
-  </button>
-  <span>Page {{ (page()?.page ?? 0) + 1 }} of {{ page()?.totalPages || 1 }}</span>
-  <span>({{ page()?.totalElements ?? 0 }} employees)</span>
-  <button name="next" type="button" [disabled]="isLastPage()" (click)="goToPage(1)">Next</button>
-</nav>
+    <select name="country" [value]="filters().country ?? ''" (change)="onFilter('country', $event)">
+      <option value="">All countries</option>
+      @for (country of catalog()?.countries; track country.code) {
+        <option [value]="country.code">{{ country.name }}</option>
+      }
+    </select>
+
+    <select name="department" [value]="filters().department ?? ''" (change)="onFilter('department', $event)">
+      <option value="">All departments</option>
+      @for (department of catalog()?.departments; track department) {
+        <option [value]="department">{{ department }}</option>
+      }
+    </select>
+
+    <select name="jobTitle" [value]="filters().jobTitle ?? ''" (change)="onFilter('jobTitle', $event)">
+      <option value="">All job titles</option>
+      @for (jobTitle of catalog()?.jobTitles; track jobTitle.name) {
+        <option [value]="jobTitle.name">{{ jobTitle.name }}</option>
+      }
+    </select>
+
+    <select name="sort" [value]="filters().sort" (change)="onFilter('sort', $event)">
+      <option value="desc">Highest salary first</option>
+      <option value="asc">Lowest salary first</option>
+    </select>
+
+    <button name="reset" type="button" class="secondary" (click)="reset()">Reset</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Job title</th>
+          <th>Department</th>
+          <th>Country</th>
+          <th class="amount">Annual salary</th>
+          <th class="amount">Salary (USD)</th>
+          <th>Hired</th>
+          <th class="actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (employee of page()?.content; track employee.id) {
+          <tr>
+            <td>{{ employee.fullName }}</td>
+            <td class="email">{{ employee.email }}</td>
+            <td>{{ employee.jobTitle }}</td>
+            <td><span class="chip">{{ employee.department }}</span></td>
+            <td><span class="badge">{{ employee.countryCode }}</span></td>
+            <td class="amount">
+              {{ employee.annualSalary | currency: employee.currency : 'symbol' : '1.0-0' }}
+            </td>
+            <td class="amount usd">{{ employee.annualSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+            <td>{{ employee.hireDate }}</td>
+            <td class="actions">
+              @if (confirmingId() === employee.id) {
+                <span>Delete?</span>
+                <button name="confirm-delete" type="button" class="link danger" (click)="delete(employee.id)">
+                  Yes
+                </button>
+                <button name="cancel-delete" type="button" class="link" (click)="confirmingId.set(undefined)">
+                  No
+                </button>
+              } @else {
+                <a [routerLink]="['/employees', employee.id, 'edit']">Edit</a>
+                <span class="divider">|</span>
+                <button name="delete" type="button" class="link danger" (click)="confirmingId.set(employee.id)">
+                  Delete
+                </button>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="9" class="empty">No employees match.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="pager">
+    <span class="summary">
+      Page <strong>{{ (page()?.page ?? 0) + 1 }}</strong> of <strong>{{ page()?.totalPages || 1 }}</strong>
+      <span class="divider">|</span>
+      {{ page()?.totalElements ?? 0 | number }} employees
+    </span>
+
+    <nav class="pages-nav">
+      <button name="previous" type="button" class="secondary" [disabled]="isFirstPage()" (click)="goToPage(-1)">
+        ‹ Previous
+      </button>
+      <span class="pages">
+        @for (number of pageNumbers(); track $index) {
+          @if (number === null) {
+            <span class="gap">…</span>
+          } @else {
+            <button
+              type="button"
+              class="page"
+              [attr.data-page]="number + 1"
+              [class.current]="number === page()?.page"
+              (click)="goTo(number)"
+            >
+              {{ number + 1 }}
+            </button>
+          }
+        }
+      </span>
+      <button name="next" type="button" class="secondary" [disabled]="isLastPage()" (click)="goToPage(1)">
+        Next ›
+      </button>
+    </nav>
+  </footer>
+</section>

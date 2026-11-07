@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
-import { LocalStats, UsdStats } from './insights.model';
+import { CompanySummary, LocalStats, UsdStats } from './insights.model';
 import { InsightsService } from './insights.service';
 import { environment } from '../../environments/environment';
 
@@ -91,5 +91,18 @@ describe('InsightsService', () => {
 
     // Then
     expect(result).toEqual([engineering]);
+  });
+
+  it('gets the company summary', () => {
+    // Given
+    const summary = { headcount: 6, countries: 3, averageSalaryUsd: 63637, totalPayrollUsd: 381824 };
+    let result: CompanySummary | undefined;
+
+    // When
+    service.summary().subscribe((s) => (result = s));
+    http.expectOne(`${API}/api/insights/summary`).flush(summary);
+
+    // Then
+    expect(result).toEqual(summary);
   });
 });

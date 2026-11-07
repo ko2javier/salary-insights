@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { LocalStats, UsdStats } from './insights.model';
+import { CompanySummary, LocalStats, UsdStats } from './insights.model';
 
 const API = `${environment.apiUrl}/api/insights`;
 
@@ -19,6 +19,10 @@ export class InsightsService {
 
   byJobTitleIn(countryCode: string): Observable<LocalStats[]> {
     return this.http.get<LocalStats[]>(`${API}/countries/${countryCode}/job-titles`);
+  }
+
+  summary(): Observable<CompanySummary> {
+    return EMPTY;
   }
 
   byDepartment(): Observable<UsdStats[]> {
