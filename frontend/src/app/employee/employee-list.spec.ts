@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
@@ -26,6 +27,7 @@ function pageOf(content: Employee[], page = 0, totalPages = 1): EmployeePage {
 describe('EmployeeList', () => {
   let fixture: ComponentFixture<EmployeeList>;
   let list: ReturnType<typeof vi.fn>;
+  let remove: ReturnType<typeof vi.fn>;
 
   function element<T extends HTMLElement>(selector: string): T {
     return fixture.nativeElement.querySelector(selector) as T;
@@ -44,9 +46,10 @@ describe('EmployeeList', () => {
 
   async function render(firstPage: EmployeePage) {
     list = vi.fn().mockReturnValue(of(firstPage));
+    remove = vi.fn().mockReturnValue(of(undefined));
     TestBed.configureTestingModule({
       imports: [EmployeeList],
-      providers: [{ provide: EmployeeService, useValue: { list } }],
+      providers: [provideRouter([]), { provide: EmployeeService, useValue: { list, delete: remove } }],
     });
     fixture = TestBed.createComponent(EmployeeList);
     fixture.detectChanges();
@@ -153,5 +156,38 @@ describe('EmployeeList', () => {
     // Then
     expect(element<HTMLButtonElement>('button[name=previous]').disabled).toBe(true);
     expect(element<HTMLButtonElement>('button[name=next]').disabled).toBe(true);
+  });
+
+  it('deletes an employee after confirming and reloads the same page', async () => {
+    // Given
+    await render(pageOf([ana], 0, 3));
+    element<HTMLButtonElement>('button[name=next]').click();
+    fixture.detectChanges();
+    list.mockClear();
+
+    // When
+    element<HTMLButtonElement>('button[name=delete]').click();
+    fixture.detectChanges();
+    element<HTMLButtonElement>('button[name=confirm-delete]').click();
+    fixture.detectChanges();
+
+    // Then
+    expect(remove).toHaveBeenCalledWith(7);
+    expect(lastFilters()).toEqual({ sort: 'desc', page: 1 });
+  });
+
+  it('keeps the employee when the delete is not confirmed', async () => {
+    // Given
+    await render(pageOf([ana]));
+
+    // When
+    element<HTMLButtonElement>('button[name=delete]').click();
+    fixture.detectChanges();
+    element<HTMLButtonElement>('button[name=cancel-delete]').click();
+    fixture.detectChanges();
+
+    // Then
+    expect(remove).not.toHaveBeenCalled();
+    expect(element('button[name=delete]')).not.toBeNull();
   });
 });

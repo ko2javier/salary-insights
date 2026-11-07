@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { COUNTRIES, DEPARTMENTS, JOB_TITLES } from '../catalog';
 import { EmployeeFilters, EmployeePage } from './employee.model';
@@ -7,7 +8,7 @@ import { EmployeeService } from './employee.service';
 
 @Component({
   selector: 'app-employee-list',
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, RouterLink],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.scss',
 })
@@ -19,6 +20,7 @@ export class EmployeeList implements OnInit {
   protected readonly jobTitles = JOB_TITLES;
 
   protected readonly page = signal<EmployeePage | undefined>(undefined);
+  protected readonly confirmingId = signal<number | undefined>(undefined);
   private filters: EmployeeFilters = { sort: 'desc', page: 0 };
 
   ngOnInit() {
@@ -47,6 +49,8 @@ export class EmployeeList implements OnInit {
     const page = this.page();
     return !page || page.page + 1 >= page.totalPages;
   }
+
+  protected delete(id: number) {}
 
   // Any new filter changes the result set, so it starts again from the first page.
   // An empty value ("All ...") removes the filter.

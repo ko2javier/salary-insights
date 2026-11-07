@@ -1,3 +1,7 @@
+<div class="toolbar">
+  <a routerLink="/employees/new">New employee</a>
+</div>
+
 <section class="filters">
   <form (submit)="onSearch($event, search.value)">
     <input #search name="search" type="search" placeholder="Search by name" />
@@ -42,6 +46,7 @@
       <th class="amount">Salary</th>
       <th class="amount">Salary (USD)</th>
       <th>Hired</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -57,10 +62,20 @@
         </td>
         <td class="amount">{{ employee.annualSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
         <td>{{ employee.hireDate }}</td>
+        <td class="row-actions">
+          @if (confirmingId() === employee.id) {
+            Delete?
+            <button name="confirm-delete" type="button" (click)="delete(employee.id)">Yes</button>
+            <button name="cancel-delete" type="button" (click)="confirmingId.set(undefined)">No</button>
+          } @else {
+            <a [routerLink]="['/employees', employee.id, 'edit']">Edit</a>
+            <button name="delete" type="button" (click)="confirmingId.set(employee.id)">Delete</button>
+          }
+        </td>
       </tr>
     } @empty {
       <tr>
-        <td colspan="8">No employees match.</td>
+        <td colspan="9">No employees match.</td>
       </tr>
     }
   </tbody>
