@@ -57,7 +57,7 @@ describe('EmployeeList', () => {
         provideRouter([]),
         provideTestCatalog(),
         { provide: EmployeeService, useValue: { list, delete: remove } },
-        { provide: InsightsService, useValue: { summary: () => of(summary) } },
+        { provide: InsightsService, useValue: { summary: () => of(summary), byJobTitleIn: () => of([]) } },
       ],
     });
     fixture = TestBed.createComponent(EmployeeList);
@@ -71,11 +71,8 @@ describe('EmployeeList', () => {
 
     // Then
     expect(lastFilters()).toEqual({ sort: 'desc', page: 0 });
-    const cells = [...fixture.nativeElement.querySelectorAll('tbody tr td')].map(
-      (td: HTMLElement) => td.textContent?.trim(),
-    );
-    expect(cells).toContain('Ana Lopez');
-    expect(cells).toContain('Software Engineer');
+    expect(element('tbody .name').textContent?.trim()).toBe('Ana Lopez');
+    expect(element('tbody .job-title').textContent?.trim()).toBe('Software Engineer');
   });
 
   it('says so when no employee matches', async () => {
@@ -261,5 +258,49 @@ describe('EmployeeList', () => {
     expect(fixture.nativeElement.querySelectorAll('thead th.amount').length).toBe(1);
     expect(element('td.salary .usd').textContent?.trim()).toBe('$50,396');
     expect(element('td.salary .local').textContent?.trim()).toBe('€45,000');
+  });
+
+  it('opens the panel of the employee whose row is clicked', async () => {
+    // Given
+    await render(pageOf([ana]));
+
+    // When
+    element<HTMLElement>('tbody tr')?.click();
+    fixture.detectChanges();
+
+    // Then
+    expect(element('app-employee-detail')?.textContent).toContain('Ana Lopez');
+    expect(element('tbody tr')?.classList).toContain('selected');
+  });
+
+  it('does not open the panel when the trash in the row is clicked', async () => {
+    // Given
+    await render(pageOf([ana]));
+
+    // When
+    element<HTMLButtonElement>('button[name=delete]').click();
+    fixture.detectChanges();
+
+    // Then
+    expect(element('app-employee-detail')).toBeNull();
+  });
+
+  it('deletes from the panel, closes it and reloads the page', async () => {
+    // Given
+    await render(pageOf([ana]));
+    element<HTMLElement>('tbody tr')?.click();
+    fixture.detectChanges();
+    list.mockClear();
+
+    // When
+    element<HTMLButtonElement>('button[name=remove]')?.click();
+    fixture.detectChanges();
+    element<HTMLButtonElement>('button[name=confirm-remove]')?.click();
+    fixture.detectChanges();
+
+    // Then
+    expect(remove).toHaveBeenCalledWith(7);
+    expect(list).toHaveBeenCalled();
+    expect(element('app-employee-detail')).toBeNull();
   });
 });

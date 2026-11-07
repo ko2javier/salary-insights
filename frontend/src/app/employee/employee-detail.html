@@ -1,0 +1,89 @@
+<div class="backdrop" (click)="closed.emit()"></div>
+
+<aside class="panel" role="dialog" [attr.aria-label]="employee().fullName">
+  <header class="panel-header">
+    <span class="avatar">{{ initials(employee().fullName) }}</span>
+    <div>
+      <h2>{{ employee().fullName }}</h2>
+      <p>{{ employee().jobTitle }} · {{ employee().department }}</p>
+    </div>
+    <button name="close" type="button" class="icon-button" title="Close" aria-label="Close" (click)="closed.emit()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+    </button>
+  </header>
+
+  <div class="panel-body">
+    <section class="salary">
+      <h3>Annual salary</h3>
+      <p class="usd">{{ employee().annualSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</p>
+      @if (employee().currency !== 'USD') {
+        <p class="local">
+          {{ employee().annualSalary | currency: employee().currency : 'symbol' : '1.0-0' }} in local currency
+        </p>
+      }
+    </section>
+
+    @if (comparison(); as peers) {
+      <section class="comparison">
+        <strong>{{ comparedWithAverage(peers) }}</strong>
+        <p>Compared with every {{ employee().jobTitle }} in {{ countryName() }}</p>
+
+        <div class="range">
+          <span class="fill" [style.width.%]="positionOf(employee().annualSalary, peers)"></span>
+          <span class="marker" [style.left.%]="positionOf(peers.averageSalary, peers)"></span>
+          <span class="dot" [style.left.%]="positionOf(employee().annualSalary, peers)"></span>
+        </div>
+
+        <div class="legend">
+          <div class="lowest">
+            <span>Lowest</span>
+            <strong>{{ peers.minSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+          </div>
+          <div class="average">
+            <span>Average</span>
+            <strong>{{ peers.averageSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+          </div>
+          <div class="highest">
+            <span>Highest</span>
+            <strong>{{ peers.maxSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</strong>
+          </div>
+        </div>
+      </section>
+    }
+
+    <dl class="facts">
+      <dt>Email</dt>
+      <dd>{{ employee().email }}</dd>
+      <dt>Country</dt>
+      <dd>{{ countryName() }} ({{ employee().currency }})</dd>
+      <dt>Department</dt>
+      <dd>{{ employee().department }}</dd>
+      <dt>Hired</dt>
+      <dd>{{ employee().hireDate | date: 'MMM y' }}</dd>
+    </dl>
+  </div>
+
+  <footer class="panel-footer">
+    @if (confirmingRemove()) {
+      <span>Remove {{ employee().fullName }}?</span>
+      <button name="confirm-remove" type="button" class="danger" (click)="removed.emit(employee().id)">Yes, remove</button>
+      <button name="cancel-remove" type="button" class="secondary" (click)="confirmingRemove.set(false)">No</button>
+    } @else {
+      <button name="remove" type="button" class="link danger" (click)="confirmingRemove.set(true)">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6h18" />
+          <path d="M8 6V4h8v2" />
+          <path d="M19 6l-1 14H6L5 6" />
+        </svg>
+        Remove employee
+      </button>
+      <a name="edit" class="button" [routerLink]="['/employees', employee().id, 'edit']">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+        </svg>
+        Edit details
+      </a>
+    }
+  </footer>
+</aside>

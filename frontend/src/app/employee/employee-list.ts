@@ -1,4 +1,4 @@
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -6,14 +6,16 @@ import { RouterLink } from '@angular/router';
 import { CatalogService } from '../catalog/catalog.service';
 import { CompanySummary } from '../insights/insights.model';
 import { InsightsService } from '../insights/insights.service';
-import { EmployeeFilters, EmployeePage } from './employee.model';
+import { EmployeeDetail } from './employee-detail';
+import { Employee, EmployeeFilters, EmployeePage } from './employee.model';
 import { EmployeeService } from './employee.service';
+import { initials } from './initials';
 
 const NO_FILTERS: EmployeeFilters = { sort: 'desc', page: 0 };
 
 @Component({
   selector: 'app-employee-list',
-  imports: [CurrencyPipe, DecimalPipe, RouterLink],
+  imports: [CurrencyPipe, DatePipe, DecimalPipe, RouterLink, EmployeeDetail],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.scss',
 })
@@ -27,6 +29,8 @@ export class EmployeeList implements OnInit {
   protected readonly page = signal<EmployeePage | undefined>(undefined);
   protected readonly confirmingId = signal<number | undefined>(undefined);
   protected readonly filters = signal<EmployeeFilters>(NO_FILTERS);
+  protected readonly selected = signal<Employee | undefined>(undefined);
+  protected readonly initials = initials;
 
   ngOnInit() {
     this.insights.summary().subscribe((summary) => this.summary.set(summary));
@@ -96,6 +100,14 @@ export class EmployeeList implements OnInit {
       notation: 'compact',
       maximumFractionDigits: 1,
     }).format(amount);
+  }
+
+  protected select(employee: Employee) {}
+
+  protected removeFromPanel(id: number) {}
+
+  protected countryName(code: string): string {
+    return this.catalog()?.countries.find((country) => country.code === code)?.name ?? code;
   }
 
   // Stays on the same page, so the HR manager sees the list they were working on.

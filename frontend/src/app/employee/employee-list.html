@@ -1,3 +1,8 @@
+<header class="page-title">
+  <h2>Employees</h2>
+  <p>Select an employee to see how their pay compares, and to edit or remove them.</p>
+</header>
+
 <section class="kpis">
   <article class="card kpi">
     <h3>Workforce</h3>
@@ -62,10 +67,8 @@
     <table>
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Email</th>
+          <th>Employee</th>
           <th>Job title</th>
-          <th>Department</th>
           <th>Country</th>
           <th class="amount">Salary</th>
           <th>Hired</th>
@@ -74,12 +77,24 @@
       </thead>
       <tbody>
         @for (employee of page()?.content; track employee.id) {
-          <tr>
-            <td>{{ employee.fullName }}</td>
-            <td class="email">{{ employee.email }}</td>
-            <td>{{ employee.jobTitle }}</td>
-            <td><span class="chip">{{ employee.department }}</span></td>
-            <td><span class="badge">{{ employee.countryCode }}</span></td>
+          <tr [class.selected]="selected()?.id === employee.id" (click)="select(employee)">
+            <td>
+              <div class="person">
+                <span class="avatar">{{ initials(employee.fullName) }}</span>
+                <div>
+                  <span class="name">{{ employee.fullName }}</span>
+                  <span class="sub">{{ employee.email }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="job-title">{{ employee.jobTitle }}</span>
+              <span class="sub">{{ employee.department }}</span>
+            </td>
+            <td class="country">
+              <span class="badge">{{ employee.countryCode }}</span>
+              {{ countryName(employee.countryCode) }}
+            </td>
             <!-- USD on top because it is what the list is sorted by; the local amount underneath -->
             <td class="amount salary">
               <span class="usd">{{ employee.annualSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
@@ -87,8 +102,9 @@
                 <span class="local">{{ employee.annualSalary | currency: employee.currency : 'symbol' : '1.0-0' }}</span>
               }
             </td>
-            <td>{{ employee.hireDate }}</td>
-            <td class="actions">
+            <td class="hired">{{ employee.hireDate | date: 'MMM y' }}</td>
+            <!-- The row opens the panel; the buttons in here must not -->
+            <td class="actions" (click)="$event.stopPropagation()">
               @if (confirmingId() === employee.id) {
                 <span>Delete?</span>
                 <button name="confirm-delete" type="button" class="link danger" (click)="delete(employee.id)">
@@ -129,7 +145,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="8" class="empty">No employees match.</td>
+            <td colspan="6" class="empty">No employees match.</td>
           </tr>
         }
       </tbody>
@@ -170,3 +186,7 @@
     </nav>
   </footer>
 </section>
+
+@if (selected(); as employee) {
+  <app-employee-detail [employee]="employee" (closed)="selected.set(undefined)" (removed)="removeFromPanel($event)" />
+}
