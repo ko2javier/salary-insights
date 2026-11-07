@@ -162,3 +162,22 @@ docker compose start backend
 The volume name starts with the folder the repository was cloned into (`salary-insights_` above);
 `docker volume ls` shows the exact name. The `chown` gives the file back to the backend's non-root
 user.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push and pull request:
+
+- **Backend:** `./gradlew test` (JUnit, against SQLite).
+- **Frontend:** `npm ci`, `ng test` (Vitest) and the production `ng build`.
+
+A failing backend run keeps its HTML test report as a downloadable artifact.
+
+## Possible improvements
+
+- **Continuous deployment.** Today a new version reaches the server by hand (`git pull` and
+  `docker compose up --build -d`). The next step: CI builds both images, pushes them to a registry
+  tagged with the commit, and a deploy job pulls that exact tag on the server and waits for the
+  health check. Left out on purpose: it needs server credentials stored as repository secrets.
+- **Scheduled backups** of the SQLite file (the commands above, run by cron and copied off the
+  server).
+
