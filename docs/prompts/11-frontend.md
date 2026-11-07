@@ -122,3 +122,9 @@ Prompts verbatim, in Spanish as I wrote them, with an English translation below 
 > has los commits y los push
 
 *"Do the commits and the push."*
+
+## 2026-11-07 (favicon)
+
+> Sustituye el favicon de Angular por favicon.svg (te lo paso). Ponlo en frontend/public/, borra favicon.ico, y en index.html cambia la línea del icono.. El svg esta en descargas
+
+*"Replace the Angular favicon with favicon.svg (I am giving it to you). Put it in frontend/public/, delete favicon.ico, and change the icon line in index.html. The svg is in Downloads."*
