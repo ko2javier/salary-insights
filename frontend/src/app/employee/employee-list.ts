@@ -1,7 +1,6 @@
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
 
 import { CatalogService } from '../catalog/catalog.service';
 import { CompanySummary } from '../insights/insights.model';
@@ -15,7 +14,7 @@ const NO_FILTERS: EmployeeFilters = { sort: 'desc', page: 0 };
 
 @Component({
   selector: 'app-employee-list',
-  imports: [CurrencyPipe, DatePipe, DecimalPipe, RouterLink, EmployeeDetail],
+  imports: [CurrencyPipe, DatePipe, DecimalPipe, EmployeeDetail],
   templateUrl: './employee-list.html',
   styleUrl: './employee-list.scss',
 })
@@ -27,7 +26,6 @@ export class EmployeeList implements OnInit {
   protected readonly summary = signal<CompanySummary | undefined>(undefined);
 
   protected readonly page = signal<EmployeePage | undefined>(undefined);
-  protected readonly confirmingId = signal<number | undefined>(undefined);
   protected readonly filters = signal<EmployeeFilters>(NO_FILTERS);
   protected readonly selected = signal<Employee | undefined>(undefined);
   protected readonly initials = initials;
@@ -106,6 +104,7 @@ export class EmployeeList implements OnInit {
     this.selected.set(employee);
   }
 
+  // Stays on the same page, so the HR manager sees the list they were working on.
   protected removeFromPanel(id: number) {
     this.service.delete(id).subscribe(() => {
       this.selected.set(undefined);
@@ -115,14 +114,6 @@ export class EmployeeList implements OnInit {
 
   protected countryName(code: string): string {
     return this.catalog()?.countries.find((country) => country.code === code)?.name ?? code;
-  }
-
-  // Stays on the same page, so the HR manager sees the list they were working on.
-  protected delete(id: number) {
-    this.service.delete(id).subscribe(() => {
-      this.confirmingId.set(undefined);
-      this.load();
-    });
   }
 
   // Any new filter changes the result set, so it starts again from the first page.

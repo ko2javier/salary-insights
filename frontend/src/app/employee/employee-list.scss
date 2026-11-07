@@ -23,6 +23,11 @@ tbody tr:hover {
   background: var(--page);
 }
 
+tbody tr:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
 tbody tr.selected {
   background: var(--primary-soft);
   box-shadow: inset 3px 0 0 var(--primary);
@@ -63,10 +68,6 @@ tbody tr.selected {
   white-space: nowrap;
 }
 
-td.actions {
-  cursor: default;
-}
-
 .salary span {
   display: block;
 }
@@ -81,53 +82,8 @@ td.actions {
   font-size: 0.8rem;
 }
 
-.actions {
-  text-align: right;
-  white-space: nowrap;
-}
-
-.actions > * + * {
-  margin-left: 0.25rem;
-}
-
 .divider {
   color: var(--line);
-}
-
-// Pencil and trash: grey until hovered, then tinted with a soft background
-.icon-button {
-  display: inline-grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 0;
-  border-radius: 6px;
-  background: none;
-  color: var(--muted);
-  vertical-align: middle;
-  transition: background-color 0.15s, color 0.15s;
-
-  svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  &:hover:not(:disabled) {
-    background: var(--primary-soft);
-    color: var(--primary);
-    text-decoration: none;
-  }
-
-  &.danger:hover:not(:disabled) {
-    background: #fef2f2;
-    color: var(--danger);
-  }
 }
 
 .pager {
