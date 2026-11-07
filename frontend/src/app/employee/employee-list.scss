@@ -19,8 +19,18 @@
   font-size: 0.85rem;
 }
 
-.usd {
+.salary span {
+  display: block;
+}
+
+.salary .usd {
+  color: var(--ink);
   font-weight: 600;
+}
+
+.salary .local {
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 
 .actions {

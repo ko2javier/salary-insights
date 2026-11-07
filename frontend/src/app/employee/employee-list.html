@@ -67,8 +67,7 @@
           <th>Job title</th>
           <th>Department</th>
           <th>Country</th>
-          <th class="amount">Annual salary</th>
-          <th class="amount">Salary (USD)</th>
+          <th class="amount">Salary</th>
           <th>Hired</th>
           <th class="actions">Actions</th>
         </tr>
@@ -81,10 +80,13 @@
             <td>{{ employee.jobTitle }}</td>
             <td><span class="chip">{{ employee.department }}</span></td>
             <td><span class="badge">{{ employee.countryCode }}</span></td>
-            <td class="amount">
-              {{ employee.annualSalary | currency: employee.currency : 'symbol' : '1.0-0' }}
+            <!-- USD on top because it is what the list is sorted by; the local amount underneath -->
+            <td class="amount salary">
+              <span class="usd">{{ employee.annualSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+              @if (employee.currency !== 'USD') {
+                <span class="local">{{ employee.annualSalary | currency: employee.currency : 'symbol' : '1.0-0' }}</span>
+              }
             </td>
-            <td class="amount usd">{{ employee.annualSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
             <td>{{ employee.hireDate }}</td>
             <td class="actions">
               @if (confirmingId() === employee.id) {
@@ -106,7 +108,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="9" class="empty">No employees match.</td>
+            <td colspan="8" class="empty">No employees match.</td>
           </tr>
         }
       </tbody>
