@@ -10,22 +10,22 @@
 
   <select name="country" (change)="onFilter('country', $event)">
     <option value="">All countries</option>
-    @for (country of countries; track country.code) {
+    @for (country of catalog()?.countries; track country.code) {
       <option [value]="country.code">{{ country.name }}</option>
     }
   </select>
 
   <select name="department" (change)="onFilter('department', $event)">
     <option value="">All departments</option>
-    @for (department of departments; track department) {
+    @for (department of catalog()?.departments; track department) {
       <option [value]="department">{{ department }}</option>
     }
   </select>
 
   <select name="jobTitle" (change)="onFilter('jobTitle', $event)">
     <option value="">All job titles</option>
-    @for (jobTitle of jobTitles; track jobTitle) {
-      <option [value]="jobTitle">{{ jobTitle }}</option>
+    @for (jobTitle of catalog()?.jobTitles; track jobTitle.name) {
+      <option [value]="jobTitle.name">{{ jobTitle.name }}</option>
     }
   </select>
 

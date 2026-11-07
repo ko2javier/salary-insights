@@ -1,8 +1,9 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { COUNTRIES, DEPARTMENTS, JOB_TITLES } from '../catalog';
+import { CatalogService } from '../catalog/catalog.service';
 import { EmployeeFilters, EmployeePage } from './employee.model';
 import { EmployeeService } from './employee.service';
 
@@ -15,9 +16,7 @@ import { EmployeeService } from './employee.service';
 export class EmployeeList implements OnInit {
   private readonly service = inject(EmployeeService);
 
-  protected readonly countries = COUNTRIES;
-  protected readonly departments = DEPARTMENTS;
-  protected readonly jobTitles = JOB_TITLES;
+  protected readonly catalog = toSignal(inject(CatalogService).catalog());
 
   protected readonly page = signal<EmployeePage | undefined>(undefined);
   protected readonly confirmingId = signal<number | undefined>(undefined);

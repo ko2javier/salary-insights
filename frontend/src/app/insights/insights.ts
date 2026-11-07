@@ -1,7 +1,8 @@
 import { CurrencyPipe, DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
-import { COUNTRIES, JOB_TITLES } from '../catalog';
+import { CatalogService } from '../catalog/catalog.service';
 import { LocalStats, UsdStats } from './insights.model';
 import { InsightsService } from './insights.service';
 
@@ -14,8 +15,8 @@ import { InsightsService } from './insights.service';
 export class Insights implements OnInit {
   private readonly service = inject(InsightsService);
 
-  protected readonly countries = COUNTRIES;
-  protected readonly jobTitles = JOB_TITLES;
+  protected readonly catalog = toSignal(inject(CatalogService).catalog());
+  protected readonly firstCountry = 'US';
 
   protected readonly byCountry = signal<LocalStats[]>([]);
   protected readonly byJobTitle = signal<LocalStats[]>([]);
@@ -23,7 +24,7 @@ export class Insights implements OnInit {
 
   ngOnInit() {
     this.loadCountries(undefined);
-    this.loadJobTitlesIn(COUNTRIES[0].code);
+    this.loadJobTitlesIn(this.firstCountry);
     this.service.byDepartment().subscribe((stats) => this.byDepartment.set(stats));
   }
 
@@ -38,7 +39,7 @@ export class Insights implements OnInit {
   }
 
   protected countryName(code: string): string {
-    return COUNTRIES.find((country) => country.code === code)?.name ?? code;
+    return this.catalog()?.countries.find((country) => country.code === code)?.name ?? code;
   }
 
   private loadCountries(jobTitle: string | undefined) {

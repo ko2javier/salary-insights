@@ -17,8 +17,8 @@
     Job title
     <select name="jobTitle" formControlName="jobTitle">
       <option value="">Choose a job title</option>
-      @for (jobTitle of jobTitles; track jobTitle) {
-        <option [value]="jobTitle">{{ jobTitle }}</option>
+      @for (jobTitle of catalog()?.jobTitles; track jobTitle.name) {
+        <option [value]="jobTitle.name">{{ jobTitle.name }}</option>
       }
     </select>
     <span class="error" data-error-for="jobTitle">{{ errorFor('jobTitle') }}</span>
@@ -28,7 +28,7 @@
     Country
     <select name="countryCode" formControlName="countryCode">
       <option value="">Choose a country</option>
-      @for (country of countries; track country.code) {
+      @for (country of catalog()?.countries; track country.code) {
         <option [value]="country.code">{{ country.name }}</option>
       }
     </select>
@@ -36,7 +36,7 @@
   </label>
 
   <label>
-    <span>Annual salary (<span data-currency></span>)</span>
+    <span>Annual salary (<span data-currency>{{ currency() }}</span>)</span>
     <input name="annualSalary" type="number" min="1" formControlName="annualSalary" />
     <span class="error" data-error-for="annualSalary">{{ errorFor('annualSalary') }}</span>
   </label>

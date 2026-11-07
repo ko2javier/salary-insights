@@ -10,8 +10,8 @@
 
   <select name="compareJobTitle" (change)="onCompareJobTitle($event)">
     <option value="">All job titles</option>
-    @for (jobTitle of jobTitles; track jobTitle) {
-      <option [value]="jobTitle">{{ jobTitle }}</option>
+    @for (jobTitle of catalog()?.jobTitles; track jobTitle.name) {
+      <option [value]="jobTitle.name">{{ jobTitle.name }}</option>
     }
   </select>
 
@@ -58,8 +58,8 @@
   <p class="question">Salaries per job title within one country (Q2).</p>
 
   <select name="country" (change)="onCountry($event)">
-    @for (country of countries; track country.code) {
-      <option [value]="country.code">{{ country.name }}</option>
+    @for (country of catalog()?.countries; track country.code) {
+      <option [value]="country.code" [selected]="country.code === firstCountry">{{ country.name }}</option>
     }
   </select>
 

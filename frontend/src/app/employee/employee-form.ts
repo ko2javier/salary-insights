@@ -1,9 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { COUNTRIES, JOB_TITLES } from '../catalog';
+import { CatalogService } from '../catalog/catalog.service';
 import { EmployeeRequest } from './employee.model';
 import { EmployeeService } from './employee.service';
 
@@ -18,8 +19,7 @@ export class EmployeeForm implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  protected readonly countries = COUNTRIES;
-  protected readonly jobTitles = JOB_TITLES;
+  protected readonly catalog = toSignal(inject(CatalogService).catalog());
   protected readonly id = Number(this.route.snapshot.paramMap.get('id')) || undefined;
 
   // The same rules as EmployeeRequest on the backend, checked here first so obvious mistakes
@@ -56,6 +56,12 @@ export class EmployeeForm implements OnInit {
       next: () => this.router.navigateByUrl('/'),
       error: (error: HttpErrorResponse) => this.serverErrors.set(error.error?.errors ?? {}),
     });
+  }
+
+  // The salary is typed in the currency of the chosen country.
+  protected currency(): string {
+    const code = this.form.controls.countryCode.value;
+    return this.catalog()?.countries.find((country) => country.code === code)?.currency ?? 'local currency';
   }
 
   protected errorFor(field: keyof typeof this.form.controls): string {
