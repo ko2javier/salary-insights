@@ -1,15 +1,15 @@
-<!-- Inside one country: local currency first, USD underneath (unless the country already pays in USD). -->
+<!-- Same format as the employee list: USD on top, the local amount underneath (unless it is USD already). -->
 <ng-template #localAndUsd let-amount="amount" let-usd="usd" let-currency="currency">
-  <span class="local">{{ amount | currency: currency : 'symbol' : '1.0-0' }}</span>
+  <span class="usd">{{ usd | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
   @if (currency !== 'USD') {
-    <span class="usd">{{ usd | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+    <span class="local">{{ amount | currency: currency : 'symbol' : '1.0-0' }}</span>
   }
 </ng-template>
 
 <header class="page-title">
   <h2>Salary insights</h2>
   <p>
-    Inside one country, figures in its own currency with USD underneath. Anything that mixes countries is in USD.
+    Every figure in USD. Inside one country, its own currency underneath.
   </p>
 </header>
 

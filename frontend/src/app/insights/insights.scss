@@ -69,17 +69,22 @@ section.card > header {
 }
 
 .usd {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.local {
   color: var(--muted);
   font-size: 0.8rem;
 }
 
-.average .local,
+.average .usd,
 td.average {
   color: var(--primary);
   font-weight: 600;
 }
 
-.payroll .local,
+.payroll .usd,
 td.payroll {
   font-weight: 600;
 }
