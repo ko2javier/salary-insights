@@ -19,8 +19,9 @@ tbody tr {
   transition: background-color 0.15s;
 }
 
+// Hover a clear light blue; the selected row one step darker, so the two never look alike
 tbody tr:hover {
-  background: var(--page);
+  background: #e8f0fe;
 }
 
 tbody tr:focus-visible {
@@ -28,8 +29,9 @@ tbody tr:focus-visible {
   outline-offset: -2px;
 }
 
-tbody tr.selected {
-  background: var(--primary-soft);
+tbody tr.selected,
+tbody tr.selected:hover {
+  background: #dbeafe;
   box-shadow: inset 3px 0 0 var(--primary);
 }
 
