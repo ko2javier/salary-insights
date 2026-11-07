@@ -2,9 +2,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environment';
 import { Employee, EmployeeFilters, EmployeePage, EmployeeRequest } from './employee.model';
 
-const API = '/api/employees';
+const API = `${environment.apiUrl}/api/employees`;
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {

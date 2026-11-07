@@ -4,6 +4,9 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 
 import { LocalStats, UsdStats } from './insights.model';
 import { InsightsService } from './insights.service';
+import { environment } from '../../environments/environment';
+
+const API = environment.apiUrl;
 
 const germany: LocalStats = {
   name: 'DE',
@@ -48,7 +51,7 @@ describe('InsightsService', () => {
 
     // When
     service.byCountry().subscribe((stats) => (result = stats));
-    const request = http.expectOne((r) => r.url === '/api/insights/countries');
+    const request = http.expectOne((r) => r.url === `${API}/api/insights/countries`);
     request.flush([germany]);
 
     // Then
@@ -59,7 +62,7 @@ describe('InsightsService', () => {
   it('gets the figures per country for one job title', () => {
     // When
     service.byCountry('HR Manager').subscribe();
-    const request = http.expectOne((r) => r.url === '/api/insights/countries');
+    const request = http.expectOne((r) => r.url === `${API}/api/insights/countries`);
     request.flush([germany]);
 
     // Then
@@ -72,7 +75,7 @@ describe('InsightsService', () => {
 
     // When
     service.byJobTitleIn('DE').subscribe((stats) => (result = stats));
-    http.expectOne('/api/insights/countries/DE/job-titles').flush([germany]);
+    http.expectOne(`${API}/api/insights/countries/DE/job-titles`).flush([germany]);
 
     // Then
     expect(result).toEqual([germany]);
@@ -84,7 +87,7 @@ describe('InsightsService', () => {
 
     // When
     service.byDepartment().subscribe((stats) => (result = stats));
-    http.expectOne('/api/insights/departments').flush([engineering]);
+    http.expectOne(`${API}/api/insights/departments`).flush([engineering]);
 
     // Then
     expect(result).toEqual([engineering]);
