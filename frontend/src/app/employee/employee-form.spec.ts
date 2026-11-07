@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angul
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
+import { provideTestCatalog } from '../catalog/catalog.testing';
 import { EmployeeForm } from './employee-form';
 import { Employee, EmployeeRequest } from './employee.model';
 import { EmployeeService } from './employee.service';
@@ -68,6 +69,7 @@ describe('EmployeeForm', () => {
       imports: [EmployeeForm],
       providers: [
         provideRouter([]),
+        provideTestCatalog(),
         { provide: EmployeeService, useValue: service },
         {
           provide: ActivatedRoute,
@@ -153,5 +155,17 @@ describe('EmployeeForm', () => {
     expect(element<HTMLInputElement>('[name=fullName]').value).toBe('Ana Lopez');
     expect(service.update).toHaveBeenCalledWith(7, { ...anaRequest, annualSalary: 48000 });
     expect(navigate).toHaveBeenCalledWith('/');
+  });
+
+  it('asks for the salary in the currency of the chosen country', async () => {
+    // Given
+    await render();
+
+    // When
+    type('countryCode', 'DE');
+    fixture.detectChanges();
+
+    // Then
+    expect(element('[data-currency]').textContent?.trim()).toBe('EUR');
   });
 });

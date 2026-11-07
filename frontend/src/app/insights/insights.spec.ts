@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
+import { provideTestCatalog } from '../catalog/catalog.testing';
 import { Insights } from './insights';
 import { LocalStats, UsdStats } from './insights.model';
 import { InsightsService } from './insights.service';
@@ -58,7 +59,7 @@ describe('Insights', () => {
     };
     TestBed.configureTestingModule({
       imports: [Insights],
-      providers: [{ provide: InsightsService, useValue: service }],
+      providers: [provideTestCatalog(), { provide: InsightsService, useValue: service }],
     });
     fixture = TestBed.createComponent(Insights);
     fixture.detectChanges();

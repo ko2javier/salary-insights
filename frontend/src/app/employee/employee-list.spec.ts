@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
+import { provideTestCatalog } from '../catalog/catalog.testing';
 import { EmployeeList } from './employee-list';
 import { Employee, EmployeePage } from './employee.model';
 import { EmployeeService } from './employee.service';
@@ -49,7 +50,11 @@ describe('EmployeeList', () => {
     remove = vi.fn().mockReturnValue(of(undefined));
     TestBed.configureTestingModule({
       imports: [EmployeeList],
-      providers: [provideRouter([]), { provide: EmployeeService, useValue: { list, delete: remove } }],
+      providers: [
+        provideRouter([]),
+        provideTestCatalog(),
+        { provide: EmployeeService, useValue: { list, delete: remove } },
+      ],
     });
     fixture = TestBed.createComponent(EmployeeList);
     fixture.detectChanges();
