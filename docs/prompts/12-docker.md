@@ -34,3 +34,9 @@
 > si has el push
 
 *"Yes, do the push."*
+
+> Sí: la caché de un año solo para los ficheros con huella en el nombre. favicon.svg con caché corta. Y confirma que index.html no se guarda en caché.
+>
+> R/ comenzamos con el despliegue en hetzner
+
+*"Yes: the one-year cache only for files with a fingerprint in their name. favicon.svg with a short cache. And confirm that index.html is not cached. A/ We start with the deployment on Hetzner."*
