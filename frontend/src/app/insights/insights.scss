@@ -11,9 +11,6 @@ section.card > header {
   padding: 1.25rem;
 
   h2 {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
     margin: 0 0 0.3rem;
     color: var(--ink);
     font-size: 1.1rem;
@@ -25,18 +22,6 @@ section.card > header {
     gap: 0.5rem;
     color: var(--muted);
   }
-}
-
-// The numbered square before each section title
-.step {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: var(--ink);
-  color: #fff;
-  font-size: 0.8rem;
 }
 
 .question {
@@ -63,10 +48,11 @@ section.card > header {
   font-size: 0.8rem;
 }
 
+// Bold but in the text colour: blue would read as a link, and these cannot be clicked
 .average .usd,
 td.average {
-  color: var(--primary);
-  font-weight: 600;
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .payroll .usd,

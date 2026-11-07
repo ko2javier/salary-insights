@@ -136,12 +136,12 @@ describe('Insights', () => {
     const total = text('#by-country tfoot');
     expect(total).toContain('10,001');
     expect(total).toContain('$60,263');
-    expect(total).toContain('$602,688,723');
+    expect(total).toContain('$602.7M');
   });
 
   it('shows the department of each job title', () => {
     // Then
-    expect(text('#by-job-title tbody .chip')).toBe('Human Resources');
+    expect(text('#by-job-title tbody td.department')).toBe('Human Resources');
   });
 
   it('closes the job titles with the total of their country', () => {
@@ -159,8 +159,32 @@ describe('Insights', () => {
 
   it('puts USD on top and the local amount underneath, like the employee list', () => {
     // Then
-    const average = fixture.nativeElement.querySelector('#by-country tbody td.average') as HTMLElement;
+    const rows = [...fixture.nativeElement.querySelectorAll('#by-country tbody tr')] as HTMLElement[];
+    const germany = rows.find((row) => row.querySelector('.badge')?.textContent?.trim() === 'DE')!;
+    const average = germany.querySelector('td.average') as HTMLElement;
     const lines = [...average.querySelectorAll('span')].map((span) => span.textContent?.trim());
     expect(lines).toEqual(['$55,995', '€50,000']);
+  });
+
+  it('lists the countries with the most employees first', () => {
+    // Then: the service answers Germany (1 employee) before the United States (2,480)
+    const countries = [...fixture.nativeElement.querySelectorAll('#by-country tbody tr')].map(
+      (row: HTMLElement) => row.querySelector('.badge')?.textContent?.trim(),
+    );
+    expect(countries).toEqual(['US', 'DE']);
+  });
+
+  it('shows payroll in short form, in USD and in local currency', () => {
+    // Given: India's payroll, 5,326,031,100 INR or 56,099,086 USD
+    service.byCountry.mockReturnValue(
+      of([{ ...local('IN', 'INR', 1, 1), totalPayroll: 5326031100, totalPayrollUsd: 56099086 }]),
+    );
+
+    // When
+    choose('select[name=compareJobTitle]', '');
+
+    // Then
+    expect(text('#by-country tbody td.payroll .usd')).toBe('$56.1M');
+    expect(text('#by-country tbody td.payroll .local')).toBe('₹5.33B');
   });
 });

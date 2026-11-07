@@ -128,3 +128,22 @@ Prompts verbatim, in Spanish as I wrote them, with an English translation below 
 > Sustituye el favicon de Angular por favicon.svg (te lo paso). Ponlo en frontend/public/, borra favicon.ico, y en index.html cambia la línea del icono.. El svg esta en descargas
 
 *"Replace the Angular favicon with favicon.svg (I am giving it to you). Put it in frontend/public/, delete favicon.ico, and change the icon line in index.html. The svg is in Downloads."*
+
+## 2026-11-07 (insights text and style)
+
+> Cambios de texto y estilo en la página de Insights. Todo en un solo commit, sin tocar el backend:
+>
+> 1. Quitar los códigos de pregunta (“Q1, Q4”, “Q2”, “Q3, Q4”, “Q5”) de la interfaz. Subtítulos nuevos:
+>    * By country: “Salary range, headcount and payroll for each country. Choose a job title to compare that role across countries.”
+>    * Job titles in a country: “Pick a country to see what each role pays there.”
+>    * By department: “In USD, because each department spans several countries.”
+>  La relación entre preguntas y pantallas irá en una tabla del README, no en la interfaz.
+> 2. Quitar los números 1, 2, 3 de los títulos de sección.
+> 3. La columna Average en negrita y en el color de texto normal, no en azul: no se puede pulsar y el azul parece un enlace.
+> 4. Departamento como texto normal, sin pastilla azul, igual que en la lista de empleados.
+> 5. Total payroll en formato corto: `$602.6M`, `$34.3M`, `₹5.33B` (M = millones, B = miles de millones), con `Intl.NumberFormat` y `notation: 'compact'`, también en la moneda local. Min, Average y Max se quedan con la cifra completa.
+> 6. Países ordenados por headcount, de mayor a menor, en lugar de alfabéticamente. Ordenación en el frontend; son 7 filas.
+>
+> Actualiza los tests que dependan de estos textos u órdenes. Guarda este prompt en `docs/prompts/`.
+
+*"Text and style changes on the Insights page. All in one commit, without touching the backend: 1. Remove the question codes ("Q1, Q4", "Q2", "Q3, Q4", "Q5") from the interface, with new subtitles [above]; the mapping between questions and screens goes in a README table, not in the interface. 2. Remove the numbers 1, 2, 3 from the section titles. 3. The Average column bold and in the normal text colour, not blue: it can't be clicked and blue looks like a link. 4. Department as plain text, without the blue pill, as in the employee list. 5. Total payroll in short format ($602.6M, $34.3M, ₹5.33B; M = millions, B = billions) with `Intl.NumberFormat` and `notation: 'compact'`, also in local currency; Min, Average and Max keep the full figure. 6. Countries sorted by headcount, largest first, instead of alphabetically; sorting in the frontend, there are 7 rows. Update the tests that depend on these texts or orders. Save this prompt in `docs/prompts/`."*

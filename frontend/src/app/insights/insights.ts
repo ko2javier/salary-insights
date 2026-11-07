@@ -46,6 +46,25 @@ export class Insights implements OnInit {
     this.loadJobTitlesIn(countryCode);
   }
 
+  // 602,615,930 → "$602.6M", 5,326,031,100 INR → "₹5.33B": one decimal, or three significant digits
+  // when that says more (5.33 rather than 5.3).
+  protected compact(amount: number | undefined, currency: string): string {
+    if (amount === undefined) {
+      return '';
+    }
+    // roundingPriority works in every current browser, but TypeScript only types it from ES2023
+    // and this project targets ES2022: hence the assertion instead of an inline object.
+    const options = {
+      style: 'currency',
+      currency,
+      notation: 'compact',
+      maximumFractionDigits: 1,
+      maximumSignificantDigits: 3,
+      roundingPriority: 'morePrecision',
+    } as Intl.NumberFormatOptions;
+    return new Intl.NumberFormat('en-US', options).format(amount);
+  }
+
   protected countryName(code: string | undefined): string {
     return this.catalog()?.countries.find((country) => country.code === code)?.name ?? code ?? '';
   }
@@ -79,7 +98,8 @@ export class Insights implements OnInit {
   private loadCountries(jobTitle: string | undefined) {
     this.comparing.set(jobTitle !== undefined);
     this.service.byCountry(jobTitle).subscribe((stats) => {
-      this.byCountry.set(stats);
+      // Largest country first: 7 rows, sorted here rather than in the SQL shared with other screens
+      this.byCountry.set([...stats].sort((a, b) => b.headcount - a.headcount));
       if (jobTitle === undefined) {
         this.allCountries.set(stats);
       }
