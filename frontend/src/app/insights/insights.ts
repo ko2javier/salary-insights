@@ -3,7 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { CatalogService } from '../catalog/catalog.service';
-import { LocalStats, UsdStats } from './insights.model';
+import { CompanySummary, LocalStats, UsdStats } from './insights.model';
 import { InsightsService } from './insights.service';
 
 @Component({
@@ -16,15 +16,18 @@ export class Insights implements OnInit {
   private readonly service = inject(InsightsService);
 
   protected readonly catalog = toSignal(inject(CatalogService).catalog());
-  protected readonly firstCountry = 'US';
+  protected readonly summary = signal<CompanySummary | undefined>(undefined);
 
   protected readonly byCountry = signal<LocalStats[]>([]);
   protected readonly byJobTitle = signal<LocalStats[]>([]);
   protected readonly byDepartment = signal<UsdStats[]>([]);
 
+  protected readonly comparing = signal(false);
+  protected readonly selectedCountry = signal('US');
+
   ngOnInit() {
     this.loadCountries(undefined);
-    this.loadJobTitlesIn(this.firstCountry);
+    this.loadJobTitlesIn(this.selectedCountry());
     this.service.byDepartment().subscribe((stats) => this.byDepartment.set(stats));
   }
 
@@ -38,8 +41,24 @@ export class Insights implements OnInit {
     this.loadJobTitlesIn((event.target as HTMLSelectElement).value);
   }
 
-  protected countryName(code: string): string {
-    return this.catalog()?.countries.find((country) => country.code === code)?.name ?? code;
+  protected countryName(code: string | undefined): string {
+    return this.catalog()?.countries.find((country) => country.code === code)?.name ?? code ?? '';
+  }
+
+  protected largestMarket(): LocalStats | undefined {
+    return undefined;
+  }
+
+  protected countryTotal(): LocalStats | undefined {
+    return undefined;
+  }
+
+  protected departmentOf(jobTitle: string): string {
+    return '';
+  }
+
+  protected shareOfPayroll(department: UsdStats): number {
+    return 0;
   }
 
   private loadCountries(jobTitle: string | undefined) {

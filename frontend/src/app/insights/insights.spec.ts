@@ -32,16 +32,22 @@ const engineering: UsdStats = {
   totalPayrollUsd: 308178714,
 };
 
+const unitedStates: LocalStats = { ...local('US', 'USD', 104545, 104545), headcount: 2480 };
+
+const summary = { headcount: 10001, countries: 7, averageSalaryUsd: 60263, totalPayrollUsd: 602688723 };
+
 describe('Insights', () => {
   let fixture: ComponentFixture<Insights>;
   let service: {
     byCountry: ReturnType<typeof vi.fn>;
     byJobTitleIn: ReturnType<typeof vi.fn>;
     byDepartment: ReturnType<typeof vi.fn>;
+    summary: ReturnType<typeof vi.fn>;
   };
 
   function text(selector: string): string {
-    return (fixture.nativeElement.querySelector(selector) as HTMLElement).textContent ?? '';
+    const found = fixture.nativeElement.querySelector(selector) as HTMLElement | null;
+    return found?.textContent?.trim() ?? '';
   }
 
   function choose(selector: string, value: string) {
@@ -53,9 +59,10 @@ describe('Insights', () => {
 
   beforeEach(async () => {
     service = {
-      byCountry: vi.fn().mockReturnValue(of([local('DE', 'EUR', 50000, 55995)])),
+      byCountry: vi.fn().mockReturnValue(of([local('DE', 'EUR', 50000, 55995), unitedStates])),
       byJobTitleIn: vi.fn().mockReturnValue(of([local('HR Manager', 'USD', 90000, 90000)])),
       byDepartment: vi.fn().mockReturnValue(of([engineering])),
+      summary: vi.fn().mockReturnValue(of(summary)),
     };
     TestBed.configureTestingModule({
       imports: [Insights],
@@ -102,5 +109,51 @@ describe('Insights', () => {
     expect(departments).toContain('Engineering');
     expect(departments).toContain('3,752');
     expect(departments).toContain('$82,137');
+  });
+
+  it('shows the company KPIs and the largest market', () => {
+    // Then
+    expect(text('[data-kpi=headcount]')).toContain('10,001');
+    expect(text('[data-kpi=payroll]')).toContain('$602,688,723');
+    expect(text('[data-kpi=average]')).toContain('$60,263');
+    expect(text('[data-kpi=largest]')).toContain('United States');
+    expect(text('[data-kpi=largest]')).toContain('2,480');
+  });
+
+  it('keeps the largest market of the whole company while one job title is compared', () => {
+    // Given
+    service.byCountry.mockReturnValue(of([{ ...local('DE', 'EUR', 1, 1), headcount: 9 }]));
+
+    // When
+    choose('select[name=compareJobTitle]', 'HR Manager');
+
+    // Then
+    expect(text('[data-kpi=largest]')).toContain('United States');
+  });
+
+  it('closes the country table with the company total', () => {
+    // Then
+    const total = text('#by-country tfoot');
+    expect(total).toContain('10,001');
+    expect(total).toContain('$60,263');
+    expect(total).toContain('$602,688,723');
+  });
+
+  it('shows the department of each job title', () => {
+    // Then
+    expect(text('#by-job-title tbody .chip')).toBe('Human Resources');
+  });
+
+  it('closes the job titles with the total of their country', () => {
+    // Then
+    const total = text('#by-job-title tfoot');
+    expect(total).toContain('United States');
+    expect(total).toContain('2,480');
+    expect(total).toContain('$104,545');
+  });
+
+  it('shows the share of the company payroll each department takes', () => {
+    // Then: 308,178,714 of 602,688,723
+    expect(text('#by-department tbody')).toContain('51.1%');
   });
 });
