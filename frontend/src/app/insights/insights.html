@@ -1,7 +1,9 @@
-<!-- Inside one country: local currency first, USD underneath. -->
+<!-- Inside one country: local currency first, USD underneath (unless the country already pays in USD). -->
 <ng-template #localAndUsd let-amount="amount" let-usd="usd" let-currency="currency">
   <span class="local">{{ amount | currency: currency : 'symbol' : '1.0-0' }}</span>
-  <span class="usd">{{ usd | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+  @if (currency !== 'USD') {
+    <span class="usd">{{ usd | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+  }
 </ng-template>
 
 <header class="page-title">

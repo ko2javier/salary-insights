@@ -1,35 +1,3 @@
-.kpis {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
-}
-
-.kpi {
-  padding: 1.25rem 1.5rem;
-
-  h3 {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .value {
-    margin: 0.6rem 0 0.3rem;
-    color: var(--ink);
-    font-size: 1.9rem;
-    font-weight: 700;
-  }
-
-  .hint {
-    margin: 0;
-    color: var(--muted);
-  }
-}
-
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -45,31 +13,9 @@
   }
 }
 
-.table-wrap {
-  overflow-x: auto;
-}
-
 .email {
   color: var(--muted);
   font-family: ui-monospace, monospace;
-  font-size: 0.85rem;
-}
-
-.chip {
-  padding: 0.2rem 0.55rem;
-  border: 1px solid #bfdbfe;
-  border-radius: 6px;
-  background: var(--primary-soft);
-  color: var(--primary);
-  font-size: 0.85rem;
-  white-space: nowrap;
-}
-
-.badge {
-  padding: 0.2rem 0.45rem;
-  border-radius: 6px;
-  background: #f1f5f9;
-  font-weight: 600;
   font-size: 0.85rem;
 }
 
@@ -88,12 +34,6 @@
 
 .divider {
   color: var(--line);
-}
-
-.empty {
-  padding: 2rem;
-  color: var(--muted);
-  text-align: center;
 }
 
 .pager {

@@ -1,27 +1,66 @@
-section {
-  margin-bottom: 1.5rem;
-  padding: 1.25rem 0 0;
-  overflow-x: auto;
+.page-title {
+  margin-bottom: 1.25rem;
+
+  h2 {
+    margin: 0 0 0.25rem;
+    color: var(--ink);
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+  }
 }
 
-header {
+section.card {
+  margin-bottom: 1.5rem;
+}
+
+section.card > header {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0 1.25rem 1rem;
+  padding: 1.25rem;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.3rem;
+    color: var(--ink);
+    font-size: 1.1rem;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+  }
 }
 
-h2 {
-  margin: 0 0 0.25rem;
-  color: var(--ink);
-  font-size: 1.1rem;
+// The numbered square before each section title
+.step {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.8rem;
 }
 
 .question {
   margin: 0;
   color: var(--muted);
+}
+
+.badge {
+  margin-right: 0.4rem;
 }
 
 .local,
@@ -31,5 +70,48 @@ h2 {
 
 .usd {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+}
+
+.average .local,
+td.average {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.payroll .local,
+td.payroll {
+  font-weight: 600;
+}
+
+tfoot td {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.share {
+  min-width: 170px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.bar {
+  display: inline-block;
+  width: 100px;
+  height: 6px;
+  margin-right: 0.5rem;
+  border-radius: 3px;
+  background: var(--line);
+  vertical-align: middle;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--primary);
+  }
 }
