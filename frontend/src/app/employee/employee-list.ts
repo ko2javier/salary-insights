@@ -102,9 +102,16 @@ export class EmployeeList implements OnInit {
     }).format(amount);
   }
 
-  protected select(employee: Employee) {}
+  protected select(employee: Employee) {
+    this.selected.set(employee);
+  }
 
-  protected removeFromPanel(id: number) {}
+  protected removeFromPanel(id: number) {
+    this.service.delete(id).subscribe(() => {
+      this.selected.set(undefined);
+      this.load();
+    });
+  }
 
   protected countryName(code: string): string {
     return this.catalog()?.countries.find((country) => country.code === code)?.name ?? code;
