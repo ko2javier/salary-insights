@@ -156,6 +156,21 @@ class InsightsApiTest {
         assertThat(response).hasStatus(HttpStatus.NOT_FOUND);
     }
 
+    @Test
+    void summaryGivesTheWholeCompanyInUsd() {
+        // Given
+        String summary = "/api/insights/summary";
+
+        // When
+        MvcTestResult response = mvc.get().uri(summary).exchange();
+
+        // Then: 170,224.8 (Spain) + 31,599 (India) + 180,000 (US) = 381,823.8 USD for six people
+        assertThat(response).hasStatus(HttpStatus.OK);
+        assertThat(response).bodyJson().isStrictlyEqualTo("""
+                { "headcount": 6, "countries": 3, "averageSalaryUsd": 63637, "totalPayrollUsd": 381824 }
+                """);
+    }
+
     private void save(String fullName, JobTitle jobTitle, String countryCode, long annualSalary) {
         String email = fullName.toLowerCase().replace(' ', '.') + "@acme.com";
         employees.save(new Employee(fullName, email, jobTitle,

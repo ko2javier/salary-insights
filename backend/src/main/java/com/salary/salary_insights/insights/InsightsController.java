@@ -35,4 +35,10 @@ class InsightsController {
     List<UsdStats> byDepartment() {
         return service.byDepartment();
     }
+
+    // Q4 for the whole company: the KPIs above the employee list
+    @GetMapping("/summary")
+    CompanySummary summary() {
+        return service.summary();
+    }
 }

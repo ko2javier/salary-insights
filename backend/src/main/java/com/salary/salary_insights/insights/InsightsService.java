@@ -75,6 +75,10 @@ public class InsightsService {
                 .list();
     }
 
+    public CompanySummary summary() {
+        return new CompanySummary(0, 0, 0, 0);
+    }
+
     private static JobTitle jobTitle(String displayName) {
         try {
             return JobTitle.fromDisplayName(displayName);
