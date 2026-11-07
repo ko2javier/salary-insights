@@ -75,8 +75,17 @@ public class InsightsService {
                 .list();
     }
 
+    // Without employees AVG and SUM are NULL, which can't go into a long: COALESCE turns them into 0
     public CompanySummary summary() {
-        return new CompanySummary(0, 0, 0, 0);
+        return jdbc.sql("""
+                        SELECT COUNT(*) AS headcount,
+                               COUNT(DISTINCT e.country_code) AS countries,
+                               COALESCE(ROUND(AVG(e.annual_salary * c.usd_per_unit)), 0) AS average_salary_usd,
+                               COALESCE(ROUND(SUM(e.annual_salary * c.usd_per_unit)), 0) AS total_payroll_usd
+                        FROM employee e JOIN country c ON c.code = e.country_code
+                        """)
+                .query(CompanySummary.class)
+                .single();
     }
 
     private static JobTitle jobTitle(String displayName) {
