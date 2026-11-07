@@ -72,6 +72,7 @@
           <th>Country</th>
           <th class="amount">Salary</th>
           <th>Hired</th>
+          <th class="chevron"></th>
         </tr>
       </thead>
       <tbody>
@@ -108,10 +109,13 @@
               }
             </td>
             <td class="hired">{{ employee.hireDate | date: 'MMM y' }}</td>
+            <td class="chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></svg>
+            </td>
           </tr>
         } @empty {
           <tr>
-            <td colspan="5" class="empty">No employees match.</td>
+            <td colspan="6" class="empty">No employees match.</td>
           </tr>
         }
       </tbody>
