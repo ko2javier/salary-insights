@@ -1,54 +1,56 @@
-<h2>{{ id ? 'Edit employee' : 'New employee' }}</h2>
+<div class="card">
+  <h2>{{ id ? 'Edit employee' : 'New employee' }}</h2>
 
-<form [formGroup]="form" (submit)="onSave($event)" novalidate>
-  <label>
-    Full name
-    <input name="fullName" formControlName="fullName" />
-    <span class="error" data-error-for="fullName">{{ errorFor('fullName') }}</span>
-  </label>
+  <form [formGroup]="form" (submit)="onSave($event)" novalidate>
+    <label>
+      Full name
+      <input name="fullName" formControlName="fullName" />
+      <span class="error" data-error-for="fullName">{{ errorFor('fullName') }}</span>
+    </label>
 
-  <label>
-    Email
-    <input name="email" type="email" formControlName="email" />
-    <span class="error" data-error-for="email">{{ errorFor('email') }}</span>
-  </label>
+    <label>
+      Email
+      <input name="email" type="email" formControlName="email" />
+      <span class="error" data-error-for="email">{{ errorFor('email') }}</span>
+    </label>
 
-  <label>
-    Job title
-    <select name="jobTitle" formControlName="jobTitle">
-      <option value="">Choose a job title</option>
-      @for (jobTitle of catalog()?.jobTitles; track jobTitle.name) {
-        <option [value]="jobTitle.name">{{ jobTitle.name }}</option>
-      }
-    </select>
-    <span class="error" data-error-for="jobTitle">{{ errorFor('jobTitle') }}</span>
-  </label>
+    <label>
+      Job title
+      <select name="jobTitle" formControlName="jobTitle">
+        <option value="">Choose a job title</option>
+        @for (jobTitle of catalog()?.jobTitles; track jobTitle.name) {
+          <option [value]="jobTitle.name">{{ jobTitle.name }}</option>
+        }
+      </select>
+      <span class="error" data-error-for="jobTitle">{{ errorFor('jobTitle') }}</span>
+    </label>
 
-  <label>
-    Country
-    <select name="countryCode" formControlName="countryCode">
-      <option value="">Choose a country</option>
-      @for (country of catalog()?.countries; track country.code) {
-        <option [value]="country.code">{{ country.name }}</option>
-      }
-    </select>
-    <span class="error" data-error-for="countryCode">{{ errorFor('countryCode') }}</span>
-  </label>
+    <label>
+      Country
+      <select name="countryCode" formControlName="countryCode">
+        <option value="">Choose a country</option>
+        @for (country of catalog()?.countries; track country.code) {
+          <option [value]="country.code">{{ country.name }}</option>
+        }
+      </select>
+      <span class="error" data-error-for="countryCode">{{ errorFor('countryCode') }}</span>
+    </label>
 
-  <label>
-    <span>Annual salary (<span data-currency>{{ currency() }}</span>)</span>
-    <input name="annualSalary" type="number" min="1" formControlName="annualSalary" />
-    <span class="error" data-error-for="annualSalary">{{ errorFor('annualSalary') }}</span>
-  </label>
+    <label>
+      <span>Annual salary (<span data-currency>{{ currency() }}</span>)</span>
+      <input name="annualSalary" type="number" min="1" formControlName="annualSalary" />
+      <span class="error" data-error-for="annualSalary">{{ errorFor('annualSalary') }}</span>
+    </label>
 
-  <label>
-    Hire date
-    <input name="hireDate" type="date" formControlName="hireDate" />
-    <span class="error" data-error-for="hireDate">{{ errorFor('hireDate') }}</span>
-  </label>
+    <label>
+      Hire date
+      <input name="hireDate" type="date" formControlName="hireDate" />
+      <span class="error" data-error-for="hireDate">{{ errorFor('hireDate') }}</span>
+    </label>
 
-  <div class="actions">
-    <button type="submit">Save</button>
-    <a routerLink="/">Cancel</a>
-  </div>
-</form>
+    <div class="actions">
+      <button type="submit">Save</button>
+      <a routerLink="/">Cancel</a>
+    </div>
+  </form>
+</div>

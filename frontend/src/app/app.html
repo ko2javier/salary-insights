@@ -1,9 +1,18 @@
 <header>
-  <h1>Salary Insights</h1>
+  <a class="brand" routerLink="/">
+    <span class="logo">SI</span>
+    <span>
+      <small>ACME · HR</small>
+      <h1>Salary Insights</h1>
+    </span>
+  </a>
+
   <nav>
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Employees</a>
     <a routerLink="/insights" routerLinkActive="active">Insights</a>
   </nav>
+
+  <a class="new" routerLink="/employees/new">+ New employee</a>
 </header>
 
 <main>

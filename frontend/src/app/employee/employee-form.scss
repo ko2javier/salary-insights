@@ -1,22 +1,34 @@
+.card {
+  max-width: 34rem;
+  padding: 1.5rem 2rem 2rem;
+}
+
+h2 {
+  margin: 0 0 1.25rem;
+  color: var(--ink);
+}
+
 form {
   display: grid;
-  gap: 0.8rem;
-  max-width: 28rem;
+  gap: 1rem;
 }
 
 label {
   display: grid;
-  gap: 0.2rem;
+  gap: 0.35rem;
+  font-weight: 500;
 }
 
 .error {
-  color: #b00020;
-  font-size: 0.85rem;
   min-height: 1em;
+  color: var(--danger);
+  font-size: 0.85rem;
+  font-weight: 400;
 }
 
 .actions {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-top: 0.5rem;
 }

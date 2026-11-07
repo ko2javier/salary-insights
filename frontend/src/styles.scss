@@ -1,6 +1,125 @@
-/* You can add global styles to this file, and also import other style files */
+// Palette and shapes shared by every screen.
+:root {
+  --ink: #0f172a;
+  --text: #1e293b;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --surface: #ffffff;
+  --page: #f8fafc;
+  --primary: #2563eb;
+  --primary-soft: #eff6ff;
+  --danger: #dc2626;
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  background: var(--page);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 14px;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input,
+select {
+  height: 38px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--primary-soft);
+  border-color: var(--primary);
+}
+
+button {
+  height: 38px;
+  padding: 0 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.secondary {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 500;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+// Buttons that look like links (Delete, Yes, No in a table row)
+button.link {
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--primary);
+  font-weight: 400;
+}
+
+button.link.danger {
+  color: var(--danger);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  padding: 0.75rem 1rem;
+  background: var(--page);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.amount {
+  text-align: right;
+  white-space: nowrap;
 }
