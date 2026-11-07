@@ -1,0 +1,132 @@
+<!-- Inside one country: local currency first, USD underneath. -->
+<ng-template #localAndUsd let-amount="amount" let-usd="usd" let-currency="currency">
+  <span class="local">{{ amount | currency: currency : 'symbol' : '1.0-0' }}</span>
+  <span class="usd">{{ usd | currency: 'USD' : 'symbol' : '1.0-0' }}</span>
+</ng-template>
+
+<section id="by-country">
+  <h2>By country</h2>
+  <p class="question">Salaries, headcount and payroll per country (Q1, Q4) — or one job title compared across countries (Q5).</p>
+
+  <select name="compareJobTitle" (change)="onCompareJobTitle($event)">
+    <option value="">All job titles</option>
+    @for (jobTitle of jobTitles; track jobTitle) {
+      <option [value]="jobTitle">{{ jobTitle }}</option>
+    }
+  </select>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Country</th>
+        <th class="amount">Headcount</th>
+        <th class="amount">Min</th>
+        <th class="amount">Average</th>
+        <th class="amount">Max</th>
+        <th class="amount">Total payroll</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of byCountry(); track row.name) {
+        <tr>
+          <td>{{ countryName(row.name) }}</td>
+          <td class="amount">{{ row.headcount | number }}</td>
+          <td class="amount">
+            <ng-container *ngTemplateOutlet="localAndUsd; context: { amount: row.minSalary, usd: row.minSalaryUsd, currency: row.currency }" />
+          </td>
+          <td class="amount">
+            <ng-container *ngTemplateOutlet="localAndUsd; context: { amount: row.averageSalary, usd: row.averageSalaryUsd, currency: row.currency }" />
+          </td>
+          <td class="amount">
+            <ng-container *ngTemplateOutlet="localAndUsd; context: { amount: row.maxSalary, usd: row.maxSalaryUsd, currency: row.currency }" />
+          </td>
+          <td class="amount">
+            <ng-container *ngTemplateOutlet="localAndUsd; context: { amount: row.totalPayroll, usd: row.totalPayrollUsd, currency: row.currency }" />
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6">No employees.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>
+
+<section id="by-job-title">
+  <h2>Job titles in a country</h2>
+  <p class="question">Salaries per job title within one country (Q2).</p>
+
+  <select name="country" (change)="onCountry($event)">
+    @for (country of countries; track country.code) {
+      <option [value]="country.code">{{ country.name }}</option>
+    }
+  </select>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Job title</th>
+        <th class="amount">Headcount</th>
+        <th class="amount">Min</th>
+        <th class="amount">Average</th>
+        <th class="amount">Max</th>
+        <th class="amount">Total payroll</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of byJobTitle(); track row.name) {
+        <tr>
+          <td>{{ row.name }}</td>
+          <td class="amount">{{ row.headcount | number }}</td>
+          <td class="amount">
+            <ng-container *ngTemplateOutlet="localAndUsd; context: { amount: row.minSalary, usd: row.minSalaryUsd, currency: row.currency }" />
+          </td>
+          <td class="amount">
+            <ng-container *ngTemplateOutlet="localAndUsd; context: { amount: row.averageSalary, usd: row.averageSalaryUsd, currency: row.currency }" />
+          </td>
+          <td class="amount">
+            <ng-container *ngTemplateOutlet="localAndUsd; context: { amount: row.maxSalary, usd: row.maxSalaryUsd, currency: row.currency }" />
+          </td>
+          <td class="amount">
+            <ng-container *ngTemplateOutlet="localAndUsd; context: { amount: row.totalPayroll, usd: row.totalPayrollUsd, currency: row.currency }" />
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6">No employees.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>
+
+<section id="by-department">
+  <h2>By department</h2>
+  <p class="question">Salaries, headcount and payroll per department, in USD because departments mix countries (Q3, Q4).</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Department</th>
+        <th class="amount">Headcount</th>
+        <th class="amount">Min</th>
+        <th class="amount">Average</th>
+        <th class="amount">Max</th>
+        <th class="amount">Total payroll</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of byDepartment(); track row.name) {
+        <tr>
+          <td>{{ row.name }}</td>
+          <td class="amount">{{ row.headcount | number }}</td>
+          <td class="amount">{{ row.minSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+          <td class="amount">{{ row.averageSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+          <td class="amount">{{ row.maxSalaryUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+          <td class="amount">{{ row.totalPayrollUsd | currency: 'USD' : 'symbol' : '1.0-0' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

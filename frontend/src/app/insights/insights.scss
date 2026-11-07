@@ -1,0 +1,42 @@
+section {
+  margin-bottom: 2.5rem;
+}
+
+h2 {
+  margin-bottom: 0.2rem;
+}
+
+.question {
+  margin-top: 0;
+  color: #555;
+}
+
+select {
+  margin-bottom: 0.8rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.amount {
+  text-align: right;
+}
+
+.local,
+.usd {
+  display: block;
+}
+
+.usd {
+  color: #666;
+  font-size: 0.85rem;
+}
