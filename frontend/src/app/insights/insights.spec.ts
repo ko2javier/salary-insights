@@ -156,4 +156,11 @@ describe('Insights', () => {
     // Then: 308,178,714 of 602,688,723
     expect(text('#by-department tbody')).toContain('51.1%');
   });
+
+  it('puts USD on top and the local amount underneath, like the employee list', () => {
+    // Then
+    const average = fixture.nativeElement.querySelector('#by-country tbody td.average') as HTMLElement;
+    const lines = [...average.querySelectorAll('span')].map((span) => span.textContent?.trim());
+    expect(lines).toEqual(['$55,995', '€50,000']);
+  });
 });
