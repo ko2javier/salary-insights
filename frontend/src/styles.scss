@@ -64,6 +64,12 @@ button {
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+button:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
 
 button.secondary {
@@ -71,6 +77,12 @@ button.secondary {
   background: var(--surface);
   color: var(--text);
   font-weight: 500;
+}
+
+button.secondary:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
 }
 
 button:disabled {
@@ -86,6 +98,11 @@ button.link {
   background: none;
   color: var(--primary);
   font-weight: 400;
+}
+
+button.link:hover:not(:disabled) {
+  background: none;
+  text-decoration: underline;
 }
 
 button.link.danger {
