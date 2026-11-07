@@ -21,11 +21,14 @@ export class Insights implements OnInit {
   protected readonly byCountry = signal<LocalStats[]>([]);
   protected readonly byJobTitle = signal<LocalStats[]>([]);
   protected readonly byDepartment = signal<UsdStats[]>([]);
+  // Every country with every job title: the KPI and the job title totals don't change while comparing
+  private readonly allCountries = signal<LocalStats[]>([]);
 
   protected readonly comparing = signal(false);
   protected readonly selectedCountry = signal('US');
 
   ngOnInit() {
+    this.service.summary().subscribe((summary) => this.summary.set(summary));
     this.loadCountries(undefined);
     this.loadJobTitlesIn(this.selectedCountry());
     this.service.byDepartment().subscribe((stats) => this.byDepartment.set(stats));
@@ -38,31 +41,49 @@ export class Insights implements OnInit {
   }
 
   protected onCountry(event: Event) {
-    this.loadJobTitlesIn((event.target as HTMLSelectElement).value);
+    const countryCode = (event.target as HTMLSelectElement).value;
+    this.selectedCountry.set(countryCode);
+    this.loadJobTitlesIn(countryCode);
   }
 
   protected countryName(code: string | undefined): string {
     return this.catalog()?.countries.find((country) => country.code === code)?.name ?? code ?? '';
   }
 
+  // The country with the most employees.
   protected largestMarket(): LocalStats | undefined {
-    return undefined;
+    let largest: LocalStats | undefined;
+    for (const country of this.allCountries()) {
+      if (!largest || country.headcount > largest.headcount) {
+        largest = country;
+      }
+    }
+    return largest;
   }
 
+  // The selected country's own row from the per-country figures, so its total comes from SQL too.
   protected countryTotal(): LocalStats | undefined {
-    return undefined;
+    return this.allCountries().find((country) => country.name === this.selectedCountry());
   }
 
   protected departmentOf(jobTitle: string): string {
-    return '';
+    return this.catalog()?.jobTitles.find((title) => title.name === jobTitle)?.department ?? '';
   }
 
+  // Percentage of the company payroll, for the bar next to each department.
   protected shareOfPayroll(department: UsdStats): number {
-    return 0;
+    const total = this.summary()?.totalPayrollUsd;
+    return total ? (department.totalPayrollUsd / total) * 100 : 0;
   }
 
   private loadCountries(jobTitle: string | undefined) {
-    this.service.byCountry(jobTitle).subscribe((stats) => this.byCountry.set(stats));
+    this.comparing.set(jobTitle !== undefined);
+    this.service.byCountry(jobTitle).subscribe((stats) => {
+      this.byCountry.set(stats);
+      if (jobTitle === undefined) {
+        this.allCountries.set(stats);
+      }
+    });
   }
 
   private loadJobTitlesIn(countryCode: string) {
