@@ -252,4 +252,14 @@ describe('EmployeeList', () => {
     );
     expect(labels).toEqual(['1', '…', '9', '10', '11', '…', '501']);
   });
+
+  it('shows one salary column: USD on top and the local amount underneath', async () => {
+    // Given / When
+    await render(pageOf([ana]));
+
+    // Then
+    expect(fixture.nativeElement.querySelectorAll('thead th.amount').length).toBe(1);
+    expect(element('td.salary .usd').textContent?.trim()).toBe('$50,396');
+    expect(element('td.salary .local').textContent?.trim()).toBe('€45,000');
+  });
 });
