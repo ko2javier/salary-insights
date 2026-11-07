@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 
 import { CatalogService } from '../catalog/catalog.service';
 import { CompanySummary } from '../insights/insights.model';
+import { InsightsService } from '../insights/insights.service';
 import { EmployeeFilters, EmployeePage } from './employee.model';
 import { EmployeeService } from './employee.service';
 
@@ -18,6 +19,7 @@ const NO_FILTERS: EmployeeFilters = { sort: 'desc', page: 0 };
 })
 export class EmployeeList implements OnInit {
   private readonly service = inject(EmployeeService);
+  private readonly insights = inject(InsightsService);
 
   protected readonly catalog = toSignal(inject(CatalogService).catalog());
   protected readonly summary = signal<CompanySummary | undefined>(undefined);
@@ -27,6 +29,7 @@ export class EmployeeList implements OnInit {
   protected readonly filters = signal<EmployeeFilters>(NO_FILTERS);
 
   ngOnInit() {
+    this.insights.summary().subscribe((summary) => this.summary.set(summary));
     this.load();
   }
 
@@ -39,14 +42,20 @@ export class EmployeeList implements OnInit {
     this.applyFilter(name, (event.target as HTMLSelectElement).value);
   }
 
-  protected reset() {}
+  protected reset() {
+    this.filters.set(NO_FILTERS);
+    this.load();
+  }
 
   protected goToPage(step: number) {
     this.filters.update((filters) => ({ ...filters, page: (filters.page ?? 0) + step }));
     this.load();
   }
 
-  protected goTo(page: number) {}
+  protected goTo(page: number) {
+    this.filters.update((filters) => ({ ...filters, page }));
+    this.load();
+  }
 
   protected isFirstPage(): boolean {
     return (this.page()?.page ?? 0) === 0;
@@ -57,12 +66,36 @@ export class EmployeeList implements OnInit {
     return !page || page.page + 1 >= page.totalPages;
   }
 
+  // Zero-based page numbers to show: the first, the last and the ones next to the current page.
+  // null marks a gap ("…") where pages are skipped.
   protected pageNumbers(): (number | null)[] {
-    return [];
+    const page = this.page();
+    if (!page || page.totalPages === 0) {
+      return [];
+    }
+    const last = page.totalPages - 1;
+    const numbers: (number | null)[] = [];
+    for (let n = 0; n <= last; n++) {
+      if (n === 0 || n === last || Math.abs(n - page.page) <= 1) {
+        numbers.push(n);
+      } else if (numbers[numbers.length - 1] !== null) {
+        numbers.push(null);
+      }
+    }
+    return numbers;
   }
 
+  // 602,688,723 → "$602.7M": the payroll is too long to read at a glance in full.
   protected compactUsd(amount: number | undefined): string {
-    return '';
+    if (amount === undefined) {
+      return '';
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      notation: 'compact',
+      maximumFractionDigits: 1,
+    }).format(amount);
   }
 
   // Stays on the same page, so the HR manager sees the list they were working on.

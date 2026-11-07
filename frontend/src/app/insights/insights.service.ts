@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { EMPTY, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { CompanySummary, LocalStats, UsdStats } from './insights.model';
@@ -21,8 +21,9 @@ export class InsightsService {
     return this.http.get<LocalStats[]>(`${API}/countries/${countryCode}/job-titles`);
   }
 
+  // Q4 for the whole company: the KPIs above the employee list
   summary(): Observable<CompanySummary> {
-    return EMPTY;
+    return this.http.get<CompanySummary>(`${API}/summary`);
   }
 
   byDepartment(): Observable<UsdStats[]> {
