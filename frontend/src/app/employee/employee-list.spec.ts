@@ -164,37 +164,23 @@ describe('EmployeeList', () => {
     expect(element<HTMLButtonElement>('button[name=next]').disabled).toBe(true);
   });
 
-  it('deletes an employee after confirming and reloads the same page', async () => {
+  it('stays on the same page after deleting from the panel', async () => {
     // Given
     await render(pageOf([ana], 0, 3));
     element<HTMLButtonElement>('button[name=next]').click();
     fixture.detectChanges();
-    list.mockClear();
+    element<HTMLElement>('tbody tr').click();
+    fixture.detectChanges();
 
     // When
-    element<HTMLButtonElement>('button[name=delete]').click();
+    element<HTMLButtonElement>('button[name=remove]').click();
     fixture.detectChanges();
-    element<HTMLButtonElement>('button[name=confirm-delete]').click();
+    element<HTMLButtonElement>('button[name=confirm-remove]').click();
     fixture.detectChanges();
 
     // Then
     expect(remove).toHaveBeenCalledWith(7);
     expect(lastFilters()).toEqual({ sort: 'desc', page: 1 });
-  });
-
-  it('keeps the employee when the delete is not confirmed', async () => {
-    // Given
-    await render(pageOf([ana]));
-
-    // When
-    element<HTMLButtonElement>('button[name=delete]').click();
-    fixture.detectChanges();
-    element<HTMLButtonElement>('button[name=cancel-delete]').click();
-    fixture.detectChanges();
-
-    // Then
-    expect(remove).not.toHaveBeenCalled();
-    expect(element('button[name=delete]')).not.toBeNull();
   });
 
   it('shows the company KPIs above the list', async () => {
@@ -273,16 +259,27 @@ describe('EmployeeList', () => {
     expect(element('tbody tr')?.classList).toContain('selected');
   });
 
-  it('does not open the panel when the trash in the row is clicked', async () => {
-    // Given
+  it('leaves editing and deleting to the panel, not to the row', async () => {
+    // Given / When
     await render(pageOf([ana]));
 
+    // Then
+    expect(element('tbody tr button')).toBeNull();
+    expect(element('tbody tr a')).toBeNull();
+  });
+
+  it('opens the panel from the keyboard too', async () => {
+    // Given
+    await render(pageOf([ana]));
+    const row = element<HTMLElement>('tbody tr');
+
     // When
-    element<HTMLButtonElement>('button[name=delete]').click();
+    row.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
     fixture.detectChanges();
 
     // Then
-    expect(element('app-employee-detail')).toBeNull();
+    expect(row.getAttribute('tabindex')).toBe('0');
+    expect(element('app-employee-detail')?.textContent).toContain('Ana Lopez');
   });
 
   it('deletes from the panel, closes it and reloads the page', async () => {
